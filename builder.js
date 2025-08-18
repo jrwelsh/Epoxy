@@ -4,86 +4,97 @@ const ctx = canvas.getContext("2d");
 const shapeSelect = document.getElementById("shape");
 const sizeSelect = document.getElementById("size");
 const woodSelect = document.getElementById("wood");
-const colorInput = document.getElementById("epoxyColor");
-const opacityInput = document.getElementById("opacity");
-const widthInput = document.getElementById("riverWidth");
+const colorPicker = document.getElementById("epoxyColor");
+const opacitySlider = document.getElementById("opacity");
+const riverWidthSlider = document.getElementById("riverWidth");
+const randomizeBtn = document.getElementById("randomize");
 
-// Draw table based on options
 function drawTable() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   const shape = shapeSelect.value;
   const size = parseInt(sizeSelect.value);
   const wood = woodSelect.value;
-  const color = colorInput.value;
-  const opacity = parseFloat(opacityInput.value);
-  const riverWidth = parseInt(widthInput.value);
+  const epoxyColor = colorPicker.value;
+  const epoxyOpacity = parseFloat(opacitySlider.value);
+  const riverWidth = parseInt(riverWidthSlider.value);
 
-  // Background = wood
-  let woodColor = "#deb887"; // default light brown
-  if (wood === "medium") woodColor = "#a0522d";
-  if (wood === "dark") woodColor = "#5c3317";
+  // Wood colors
+  let woodColor = "#8B5A2B"; // fallback
+  if (wood === "light") woodColor = "#D2B48C";
+  if (wood === "medium") woodColor = "#A0522D";
+  if (wood === "dark") woodColor = "#4B2E2E";
 
-  ctx.fillStyle = woodColor;
+  // Center + scale
+  const cx = canvas.width / 2;
+  const cy = canvas.height / 2;
+  const half = size * 5; // scaling factor
 
-  if (shape === "rectangle") {
-    ctx.fillRect(50, 50, size * 5, size * 3);
-    drawRiver(50, 50, size * 5, size * 3, riverWidth, color, opacity);
-  } else if (shape === "square") {
-    ctx.fillRect(100, 50, size * 4, size * 4);
-    drawRiver(100, 50, size * 4, size * 4, riverWidth, color, opacity);
-  } else if (shape === "circle") {
+  ctx.save();
+
+  if (shape === "circle") {
     ctx.beginPath();
-    ctx.arc(250, 150, size * 2, 0, Math.PI * 2);
+    ctx.arc(cx, cy, half, 0, Math.PI * 2);
+    ctx.fillStyle = woodColor;
     ctx.fill();
-    drawRiverCircle(250, 150, size * 2, riverWidth, color, opacity);
+    drawRiverCircle(cx, cy, half, epoxyColor, epoxyOpacity, riverWidth);
+  } else {
+    let w = half * (shape === "square" ? 1 : 2);
+    let h = half;
+
+    ctx.fillStyle = woodColor;
+    ctx.fillRect(cx - w / 2, cy - h / 2, w, h);
+    drawRiverRect(cx, cy, w, h, epoxyColor, epoxyOpacity, riverWidth);
   }
+
+  ctx.restore();
 }
 
-// Draw epoxy river (rectangle/square)
-function drawRiver(x, y, w, h, riverWidth, color, opacity) {
+function drawRiverRect(cx, cy, w, h, color, opacity, width) {
   ctx.save();
   ctx.globalAlpha = opacity;
   ctx.fillStyle = color;
 
+  // River path from LEFT to RIGHT
   ctx.beginPath();
-  ctx.moveTo(x, y);
-  ctx.bezierCurveTo(
-    x + w / 3, y + h / 4,
-    x + w / 3, y + (3 * h) / 4,
-    x + w, y + h
-  );
-  ctx.lineTo(x + w, y + h - riverWidth);
-  ctx.bezierCurveTo(
-    x + w / 3, y + (3 * h) / 4 - riverWidth,
-    x + w / 3, y + h / 4 - riverWidth,
-    x, y - riverWidth
-  );
+  ctx.moveTo(cx - w / 2, cy); // start at left middle
+
+  for (let x = -w / 2; x <= w / 2; x += 20) {
+    let yOffset = Math.sin((x + Math.random() * 20) * 0.05) * 30;
+    ctx.lineTo(cx + x, cy + yOffset);
+  }
+
+  // Mirror the path downward to create river width
+  for (let x = w / 2; x >= -w / 2; x -= 20) {
+    let yOffset = Math.sin((x + Math.random() * 20) * 0.05) * 30;
+    ctx.lineTo(cx + x, cy + yOffset + width);
+  }
+
   ctx.closePath();
   ctx.fill();
 
   ctx.restore();
 }
 
-// Draw epoxy river (circle)
-function drawRiverCircle(cx, cy, r, riverWidth, color, opacity) {
+function drawRiverCircle(cx, cy, r, color, opacity, width) {
   ctx.save();
   ctx.globalAlpha = opacity;
-  ctx.fillStyle = color;
-
+  ctx.strokeStyle = color;
+  ctx.lineWidth = width;
   ctx.beginPath();
-  ctx.arc(cx, cy, r - riverWidth, Math.PI / 3, (2 * Math.PI) / 3);
-  ctx.arc(cx, cy, r, (2 * Math.PI) / 3, Math.PI / 3, true);
-  ctx.closePath();
-  ctx.fill();
-
+  ctx.arc(cx, cy, r - 40, 0, Math.PI * 2);
+  ctx.stroke();
   ctx.restore();
 }
 
-// Event listeners
-[shapeSelect, sizeSelect, woodSelect, colorInput, opacityInput, widthInput].forEach(
-  el => el.addEventListener("input", drawTable)
+function randomizeRiver() {
+  drawTable();
+}
+
+[randomizeBtn, shapeSelect, sizeSelect, woodSelect, colorPicker, opacitySlider, riverWidthSlider].forEach(el =>
+  el.addEventListener("input", drawTable)
 );
 
-// Initial draw
+randomizeBtn.addEventListener("click", randomizeRiver);
+
 drawTable();
