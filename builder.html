@@ -1,68 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Epoxy River Table Builder</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>Epoxy Table Builder</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f4f4f4;
+      text-align: center;
+    }
+    #builder-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #tableCanvas {
+      border: 2px solid #333;
+      background: #fff;
+      margin: 20px 0;
+    }
+    .options {
+      margin: 10px 0;
+    }
+    label {
+      font-weight: bold;
+      margin-right: 5px;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>Epoxy River Table Builder</h1>
-  </header>
+  <h1>Epoxy River Table Builder</h1>
 
-  <main>
-    <div class="controls">
-      <label>
-        Shape:
-        <select id="shape">
-          <option value="rectangle">Rectangle</option>
-          <option value="square">Square</option>
-          <option value="circle">Circle</option>
-        </select>
-      </label>
+  <div id="builder-container">
+    <canvas id="tableCanvas" width="500" height="300"></canvas>
 
-      <label>
-        Size:
-        <select id="size">
-          <option value="28">28"</option>
-          <option value="34">34"</option>
-          <option value="40">40"</option>
-        </select>
-      </label>
-
-      <label>
-        Epoxy Color:
-        <input type="color" id="epoxyColor" value="#1E90FF" />
-      </label>
-
-      <label>
-        Epoxy Opacity:
-        <input type="range" id="epoxyOpacity" min="0.1" max="1" step="0.1" value="0.7" />
-      </label>
-
-      <label>
-        Epoxy Width:
-        <input type="range" id="epoxyWidth" min="0.2" max="0.6" step="0.05" value="0.4" />
-      </label>
-
-      <label>
-        Wood Type:
-        <select id="woodType">
-          <option value="walnut">Walnut</option>
-          <option value="oak">Oak</option>
-          <option value="maple">Maple</option>
-          <option value="cherry">Cherry</option>
-        </select>
-      </label>
-
-      <button id="randomizeRiver">Randomize River</button>
+    <div class="options">
+      <label for="shape">Shape:</label>
+      <select id="shape">
+        <option value="rectangle">Rectangle</option>
+        <option value="square">Square</option>
+        <option value="circle">Circle</option>
+      </select>
     </div>
 
-    <canvas id="tableCanvas" width="500" height="500"></canvas>
-  </main>
+    <div class="options">
+      <label for="size">Size:</label>
+      <select id="size">
+        <option value="28">28"</option>
+        <option value="34">34"</option>
+        <option value="40">40"</option>
+      </select>
+    </div>
 
-  <!-- Link external JS -->
+    <div class="options">
+      <label for="wood">Wood Type:</label>
+      <select id="wood">
+        <option value="light">Light</option>
+        <option value="medium">Medium</option>
+        <option value="dark">Dark</option>
+      </select>
+    </div>
+
+    <div class="options">
+      <label for="epoxyColor">Epoxy Color:</label>
+      <input type="color" id="epoxyColor" value="#0066ff">
+    </div>
+
+    <div class="options">
+      <label for="opacity">Epoxy Opacity:</label>
+      <input type="range" id="opacity" min="0.2" max="1" step="0.1" value="0.7">
+    </div>
+
+    <div class="options">
+      <label for="riverWidth">River Width:</label>
+      <input type="range" id="riverWidth" min="40" max="120" step="5" value="70">
+    </div>
+  </div>
+
+  <!-- Link to external JavaScript -->
   <script src="builder.js"></script>
 </body>
 </html>
