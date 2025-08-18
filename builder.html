@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Epoxy Builder - Jaxwel Woodworks</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Epoxy River Table Builder</h1>
+  </header>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="gallery.html">Gallery</a>
+    <a href="builder.html">Epoxy Builder</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <main>
+    <h2>Customize Your Table</h2>
+    <p>Choose your shape, size, wood, and epoxy style:</p>
+
+    <div style="display:flex;flex-wrap:wrap;gap:20px;justify-content:center;">
+      <div>
+        <label>Shape:
+          <select id="shape">
+            <option value="rectangle">Rectangle</option>
+            <option value="square">Square</option>
+            <option value="circle">Circle</option>
+          </select>
+        </label>
+        <br><br>
+
+        <label>Size:
+          <select id="size">
+            <option value="28">28"</option>
+            <option value="34">34"</option>
+            <option value="40">40"</option>
+          </select>
+        </label>
+        <br><br>
+
+        <label>Wood:
+          <select id="wood">
+            <option value="saddlebrown">Walnut</option>
+            <option value="peru">Oak</option>
+            <option value="burlywood">Maple</option>
+          </select>
+        </label>
+        <br><br>
+
+        <label>Epoxy Color:
+          <input type="color" id="epoxyColor" value="#0000ff">
+        </label>
+        <br><br>
+
+        <label>Opacity:
+          <input type="range" id="opacity" min="0.1" max="1" step="0.1" value="0.6">
+        </label>
+        <br><br>
+
+        <button onclick="drawTable()">Randomize River</button>
+      </div>
+
+      <svg id="preview" width="400" height="400" style="border:1px solid #ccc;background:white;"></svg>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Jaxwel Woodworks</p>
+  </footer>
+
+<script>
+function drawTable() {
+  const svg = document.getElementById("preview");
+  svg.innerHTML = "";
+  const shape = document.getElementById("shape").value;
+  const size = parseInt(document.getElementById("size").value);
+  const wood = document.getElementById("wood").value;
+  const epoxyColor = document.getElementById("epoxyColor").value;
+  const opacity = parseFloat(document.getElementById("opacity").value);
+
+  // Base table shape
+  if (shape === "circle") {
+    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    circle.setAttribute("cx", 200);
+    circle.setAttribute("cy", 200);
+    circle.setAttribute("r", size*4);
+    circle.setAttribute("fill", wood);
+    svg.appendChild(circle);
+  } else {
+    const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    rect.setAttribute("x", 50);
+    rect.setAttribute("y", 50);
+    rect.setAttribute("width", size*6);
+    rect.setAttribute("height", size*3);
+    rect.setAttribute("fill", wood);
+    svg.appendChild(rect);
+  }
+
+  // River path
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  let d = "";
+  const startY = 50;
+  const endY = 300;
+  const startX = 50;
+  const endX = 50 + size*6;
+  const midX = (startX + endX) / 2;
+  const waveHeight = 40;
+  const segments = 6;
+  d += `M ${startX},${startY}`;
+  for (let i=1; i<=segments; i++) {
+    const x = startX + (i/segments) * (endX-startX);
+    const y = startY + (i/segments) * (endY-startY);
+    d += ` Q ${midX},${y - waveHeight*(Math.random()*2-1)} ${x},${y}`;
+  }
+  path.setAttribute("d", d);
+  path.setAttribute("stroke", epoxyColor);
+  path.setAttribute("stroke-width", Math.random()*40 + 20);
+  path.setAttribute("fill", "none");
+  path.setAttribute("stroke-opacity", opacity);
+  svg.appendChild(path);
+}
+drawTable();
+</script>
+</body>
+</html>
