@@ -9,6 +9,9 @@ const opacitySlider = document.getElementById("opacity");
 const riverWidthSlider = document.getElementById("riverWidth");
 const randomizeBtn = document.getElementById("randomize");
 
+// store current random seed
+let riverSeed = Math.random();
+
 function drawTable() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -20,10 +23,14 @@ function drawTable() {
   const riverWidth = parseInt(riverWidthSlider.value);
 
   // Wood colors
-  let woodColor = "#8B5A2B"; // fallback
-  if (wood === "light") woodColor = "#D2B48C";
-  if (wood === "medium") woodColor = "#A0522D";
-  if (wood === "dark") woodColor = "#4B2E2E";
+  const woodColors = {
+    oak: "#C3B091",
+    cherry: "#B94E48",
+    walnut: "#5D3A1A",
+    maple: "#E6D5B8",
+    mahogany: "#4A2C2A"
+  };
+  const woodColor = woodColors[wood] || "#8B5A2B";
 
   // Center + scale
   const cx = canvas.width / 2;
@@ -55,24 +62,27 @@ function drawRiverRect(cx, cy, w, h, color, opacity, width) {
   ctx.globalAlpha = opacity;
   ctx.fillStyle = color;
 
-  // River path from LEFT to RIGHT
-  ctx.beginPath();
-  ctx.moveTo(cx - w / 2, cy); // start at left middle
+  const step = 20;
+  const amplitude = 30;
+  const freq = 0.05;
 
-  for (let x = -w / 2; x <= w / 2; x += 20) {
-    let yOffset = Math.sin((x + Math.random() * 20) * 0.05) * 30;
+  ctx.beginPath();
+  ctx.moveTo(cx - w / 2, cy);
+
+  // generate top edge of river
+  for (let x = -w / 2; x <= w / 2; x += step) {
+    let yOffset = Math.sin((x + riverSeed * 100) * freq) * amplitude;
     ctx.lineTo(cx + x, cy + yOffset);
   }
 
-  // Mirror the path downward to create river width
-  for (let x = w / 2; x >= -w / 2; x -= 20) {
-    let yOffset = Math.sin((x + Math.random() * 20) * 0.05) * 30;
+  // generate bottom edge of river
+  for (let x = w / 2; x >= -w / 2; x -= step) {
+    let yOffset = Math.sin((x + riverSeed * 100) * freq) * amplitude;
     ctx.lineTo(cx + x, cy + yOffset + width);
   }
 
   ctx.closePath();
   ctx.fill();
-
   ctx.restore();
 }
 
@@ -88,6 +98,7 @@ function drawRiverCircle(cx, cy, r, color, opacity, width) {
 }
 
 function randomizeRiver() {
+  riverSeed = Math.random(); // new seed each time
   drawTable();
 }
 
