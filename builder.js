@@ -1,3 +1,4 @@
+console.log("Builder.js loaded ✅");
 const canvas = document.getElementById("builderCanvas");
 const ctx = canvas.getContext("2d");
 
