@@ -9,8 +9,9 @@ const opacitySlider = document.getElementById("opacity");
 const riverWidthSlider = document.getElementById("riverWidth");
 const randomizeBtn = document.getElementById("randomize");
 
-// store current random seed
+// store current random seed & offset
 let riverSeed = Math.random();
+let riverYOffset = 0;
 
 function drawTable() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -67,18 +68,18 @@ function drawRiverRect(cx, cy, w, h, color, opacity, width) {
   const freq = 0.05;
 
   ctx.beginPath();
-  ctx.moveTo(cx - w / 2, cy);
+  ctx.moveTo(cx - w / 2, cy + riverYOffset);
 
   // generate top edge of river
   for (let x = -w / 2; x <= w / 2; x += step) {
     let yOffset = Math.sin((x + riverSeed * 100) * freq) * amplitude;
-    ctx.lineTo(cx + x, cy + yOffset);
+    ctx.lineTo(cx + x, cy + yOffset + riverYOffset);
   }
 
   // generate bottom edge of river
   for (let x = w / 2; x >= -w / 2; x -= step) {
     let yOffset = Math.sin((x + riverSeed * 100) * freq) * amplitude;
-    ctx.lineTo(cx + x, cy + yOffset + width);
+    ctx.lineTo(cx + x, cy + yOffset + riverYOffset + width);
   }
 
   ctx.closePath();
@@ -98,7 +99,9 @@ function drawRiverCircle(cx, cy, r, color, opacity, width) {
 }
 
 function randomizeRiver() {
-  riverSeed = Math.random(); // new seed each time
+  riverSeed = Math.random(); 
+  // random vertical shift (between -50px and +50px)
+  riverYOffset = Math.floor(Math.random() * 100 - 50);
   drawTable();
 }
 
