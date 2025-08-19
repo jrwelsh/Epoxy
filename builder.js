@@ -25,12 +25,27 @@ woodTextures.walnut.src = "textures/walnut.jpg";
 woodTextures.cherry.src = "textures/cherry.jpg";
 woodTextures.maple.src = "textures/maple.jpg";
 
+// Track when images are loaded
+let texturesLoaded = 0;
+const totalTextures = Object.keys(woodTextures).length;
+
+for (let key in woodTextures) {
+  woodTextures[key].onload = () => {
+    texturesLoaded++;
+    if (texturesLoaded === totalTextures) {
+      // Once all textures are ready, render table
+      generateRiver();
+      drawTable();
+    }
+  };
+}
+
 // --- Generate river path ---
 function generateRiver() {
   table.riverPoints = [];
   const points = 8;
   const amplitude = canvas.height / 4;
-  const taper = 0.5; // don’t taper fully to 0, keeps it natural
+  const taper = 0.5;
 
   for (let i = 0; i <= points; i++) {
     const x = (i / points) * canvas.width;
@@ -45,29 +60,29 @@ function generateRiver() {
 function drawTable() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Get selected texture
+  // Use texture if loaded, otherwise fallback
+  let fillStyle;
   const texture = woodTextures[table.wood];
-
-  if (texture.complete) {
-    const pattern = ctx.createPattern(texture, "repeat");
-    ctx.fillStyle = pattern;
+  if (texture.complete && texture.naturalWidth > 0) {
+    fillStyle = ctx.createPattern(texture, "repeat");
   } else {
-    ctx.fillStyle = "#8B5A2B"; // fallback brown
+    fillStyle = "#8B5A2B"; // fallback brown
   }
+  ctx.fillStyle = fillStyle;
 
-  // Draw wood base by shape
+  // Draw wood base
+  ctx.beginPath();
   if (table.shape === "rectangle") {
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.rect(0, 0, canvas.width, canvas.height);
   } else if (table.shape === "square") {
     const size = Math.min(canvas.width, canvas.height);
-    ctx.fillRect(
+    ctx.rect(
       (canvas.width - size) / 2,
       (canvas.height - size) / 2,
       size,
       size
     );
   } else if (table.shape === "circle") {
-    ctx.beginPath();
     ctx.arc(
       canvas.width / 2,
       canvas.height / 2,
@@ -75,11 +90,11 @@ function drawTable() {
       0,
       Math.PI * 2
     );
-    ctx.closePath();
-    ctx.fill();
   }
+  ctx.closePath();
+  ctx.fill();
 
-  // Clip epoxy to wood shape
+  // Clip epoxy inside wood
   ctx.save();
   ctx.beginPath();
   if (table.shape === "rectangle") {
@@ -160,6 +175,6 @@ document.getElementById("shapeSelect").addEventListener("change", (e) => {
   drawTable();
 });
 
-// --- Initialize ---
+// --- Initialize (fallback so it shows instantly with brown) ---
 generateRiver();
 drawTable();
