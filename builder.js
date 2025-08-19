@@ -12,7 +12,7 @@ const randomizeBtn = document.getElementById("randomize");
 let riverSeed = Math.random();
 let riverYOffset = 0;
 
-// Utility: smooth random function
+// Utility: smooth random function (organic river)
 function smoothNoise(x) {
   return Math.sin(x * 0.3 + riverSeed * 10) * 20 +
          Math.sin(x * 0.05 + riverSeed * 50) * 10;
@@ -69,21 +69,23 @@ function drawRiverRect(cx, cy, w, h, color, opacity, width) {
   const step = 20;
 
   ctx.beginPath();
-  ctx.moveTo(cx - w / 2, cy + riverYOffset);
 
-  // Top river edge
+  // Start left side top edge
+  ctx.moveTo(cx - w / 2, cy + smoothNoise(-w / 2) - width / 2);
+
+  // Top edge
   for (let x = -w / 2; x <= w / 2; x += step) {
     let yOffset = smoothNoise(x);
-    ctx.lineTo(cx + x, cy + yOffset + riverYOffset);
+    let y = cy + yOffset - width / 2;
+    if (y < cy - h / 2) y = cy - h / 2; // clamp
+    ctx.lineTo(cx + x, y);
   }
 
-  // Bottom river edge (keep within bounds)
+  // Bottom edge
   for (let x = w / 2; x >= -w / 2; x -= step) {
     let yOffset = smoothNoise(x);
-    let y = cy + yOffset + riverYOffset + width;
-    // clamp epoxy within wood height
-    if (y > cy + h / 2) y = cy + h / 2;
-    if (y < cy - h / 2) y = cy - h / 2;
+    let y = cy + yOffset + width / 2;
+    if (y > cy + h / 2) y = cy + h / 2; // clamp
     ctx.lineTo(cx + x, y);
   }
 
@@ -100,22 +102,25 @@ function drawRiverCircle(cx, cy, r, color, opacity, width) {
   const step = 15;
   ctx.beginPath();
 
-  // Clip epoxy inside the circle of wood
+  // Clip inside circle of wood
   ctx.arc(cx, cy, r, 0, Math.PI * 2);
   ctx.clip();
 
-  ctx.moveTo(cx - r, cy);
+  // Start at left edge of circle
+  ctx.moveTo(cx - r, cy + smoothNoise(-r) - width / 2);
 
-  // top edge
+  // Top edge of river band
   for (let x = -r; x <= r; x += step) {
     let yOffset = smoothNoise(x);
-    ctx.lineTo(cx + x, cy + yOffset - width / 2);
+    let y = cy + yOffset - width / 2;
+    ctx.lineTo(cx + x, y);
   }
 
-  // bottom edge
+  // Bottom edge of river band
   for (let x = r; x >= -r; x -= step) {
     let yOffset = smoothNoise(x);
-    ctx.lineTo(cx + x, cy + yOffset + width / 2);
+    let y = cy + yOffset + width / 2;
+    ctx.lineTo(cx + x, y);
   }
 
   ctx.closePath();
