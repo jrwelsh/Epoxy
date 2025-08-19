@@ -1,100 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gallery - Jaxwel Epoxy Tables</title>
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f9f9f9;
-      color: #333;
-    }
-
-    header {
-      background: #222;
-      padding: 1rem;
-      text-align: center;
-    }
-
-    header h1 {
-      color: white;
-      margin: 0;
-    }
-
-    nav {
-      margin-top: 0.5rem;
-    }
-
-    nav a {
-      margin: 0 1rem;
-      color: #fff;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    nav a:hover {
-      text-decoration: underline;
-    }
-
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1rem;
-      padding: 2rem;
-    }
-
-    .gallery-item {
-      background: white;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-      text-align: center;
-    }
-
-    .gallery-item img, .gallery-item video {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    .gallery-item p {
-      margin: 0.5rem;
-      font-size: 0.9rem;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gallery - Epoxy Tables</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Jaxwel Gallery</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="builder.html">Epoxy Builder</a>
-      <a href="gallery.html">Gallery</a>
-      <a href="about.html">About</a>
-      <a href="contact.html">Contact</a>
-    </nav>
-  </header>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <a href="index.html">Home</a>
+    <a href="gallery.html" class="active">Gallery</a>
+    <a href="builder.html">Builder</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
 
-  <section class="gallery">
-    <div class="gallery-item">
-      <img src="images/table1.jpg" alt="Epoxy River Table Example" />
-      <p>Walnut River Table - 34"</p>
+  <main class="container">
+    <h1>Project Gallery</h1>
+    <p class="subtitle">Browse real epoxy & wood table projects</p>
+
+    <div class="gallery-grid" id="galleryGrid">
+      <!-- Images & videos will load here -->
     </div>
-    <div class="gallery-item">
-      <img src="images/table2.jpg" alt="Square Epoxy Table Example" />
-      <p>Square Epoxy Coffee Table</p>
-    </div>
-    <div class="gallery-item">
-      <video controls>
-        <source src="videos/build1.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-      <p>Build Process - Walnut River</p>
-    </div>
-  </section>
+  </main>
+
+  <script src="gallery.js"></script>
 </body>
 </html>
