@@ -12,7 +12,7 @@ const table = {
   riverPoints: []
 };
 
-// --- Preload wood textures ---
+// --- Wood textures (optional) ---
 const woodTextures = {
   oak: new Image(),
   walnut: new Image(),
@@ -24,21 +24,6 @@ woodTextures.oak.src = "textures/oak.jpg";
 woodTextures.walnut.src = "textures/walnut.jpg";
 woodTextures.cherry.src = "textures/cherry.jpg";
 woodTextures.maple.src = "textures/maple.jpg";
-
-// Track when images are loaded
-let texturesLoaded = 0;
-const totalTextures = Object.keys(woodTextures).length;
-
-for (let key in woodTextures) {
-  woodTextures[key].onload = () => {
-    texturesLoaded++;
-    if (texturesLoaded === totalTextures) {
-      // Once all textures are ready, render table
-      generateRiver();
-      drawTable();
-    }
-  };
-}
 
 // --- Generate river path ---
 function generateRiver() {
@@ -56,21 +41,12 @@ function generateRiver() {
   }
 }
 
-// --- Draw the table ---
+// --- Draw table ---
 function drawTable() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Use texture if loaded, otherwise fallback
-  let fillStyle;
-  const texture = woodTextures[table.wood];
-  if (texture.complete && texture.naturalWidth > 0) {
-    fillStyle = ctx.createPattern(texture, "repeat");
-  } else {
-    fillStyle = "#8B5A2B"; // fallback brown
-  }
-  ctx.fillStyle = fillStyle;
-
-  // Draw wood base
+  // 1. Draw WOOD (fallback color first)
+  ctx.fillStyle = "#8B5A2B"; // fallback brown
   ctx.beginPath();
   if (table.shape === "rectangle") {
     ctx.rect(0, 0, canvas.width, canvas.height);
@@ -94,31 +70,7 @@ function drawTable() {
   ctx.closePath();
   ctx.fill();
 
-  // Clip epoxy inside wood
-  ctx.save();
-  ctx.beginPath();
-  if (table.shape === "rectangle") {
-    ctx.rect(0, 0, canvas.width, canvas.height);
-  } else if (table.shape === "square") {
-    const size = Math.min(canvas.width, canvas.height);
-    ctx.rect(
-      (canvas.width - size) / 2,
-      (canvas.height - size) / 2,
-      size,
-      size
-    );
-  } else if (table.shape === "circle") {
-    ctx.arc(
-      canvas.width / 2,
-      canvas.height / 2,
-      Math.min(canvas.width, canvas.height) / 2 - 10,
-      0,
-      Math.PI * 2
-    );
-  }
-  ctx.clip();
-
-  // Epoxy fill
+  // 2. Draw EPOXY
   ctx.fillStyle = table.epoxyColor;
   ctx.beginPath();
   ctx.moveTo(
@@ -135,8 +87,6 @@ function drawTable() {
   }
   ctx.closePath();
   ctx.fill();
-
-  ctx.restore();
 }
 
 // --- Randomizer ---
@@ -175,6 +125,6 @@ document.getElementById("shapeSelect").addEventListener("change", (e) => {
   drawTable();
 });
 
-// --- Initialize (fallback so it shows instantly with brown) ---
+// --- Initialize ---
 generateRiver();
 drawTable();
