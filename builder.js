@@ -9,9 +9,14 @@ const opacitySlider = document.getElementById("opacity");
 const riverWidthSlider = document.getElementById("riverWidth");
 const randomizeBtn = document.getElementById("randomize");
 
-// store current random seed & offset
 let riverSeed = Math.random();
 let riverYOffset = 0;
+
+// Utility: smooth random function
+function smoothNoise(x) {
+  return Math.sin(x * 0.3 + riverSeed * 10) * 20 +
+         Math.sin(x * 0.05 + riverSeed * 50) * 10;
+}
 
 function drawTable() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -23,7 +28,6 @@ function drawTable() {
   const epoxyOpacity = parseFloat(opacitySlider.value);
   const riverWidth = parseInt(riverWidthSlider.value);
 
-  // Wood colors
   const woodColors = {
     oak: "#C3B091",
     cherry: "#B94E48",
@@ -33,10 +37,9 @@ function drawTable() {
   };
   const woodColor = woodColors[wood] || "#8B5A2B";
 
-  // Center + scale
   const cx = canvas.width / 2;
   const cy = canvas.height / 2;
-  const half = size * 5; // scaling factor
+  const half = size * 5;
 
   ctx.save();
 
@@ -64,22 +67,24 @@ function drawRiverRect(cx, cy, w, h, color, opacity, width) {
   ctx.fillStyle = color;
 
   const step = 20;
-  const amplitude = 30;
-  const freq = 0.05;
 
   ctx.beginPath();
   ctx.moveTo(cx - w / 2, cy + riverYOffset);
 
-  // generate top edge of river
+  // Top river edge
   for (let x = -w / 2; x <= w / 2; x += step) {
-    let yOffset = Math.sin((x + riverSeed * 100) * freq) * amplitude;
+    let yOffset = smoothNoise(x);
     ctx.lineTo(cx + x, cy + yOffset + riverYOffset);
   }
 
-  // generate bottom edge of river
+  // Bottom river edge (keep within bounds)
   for (let x = w / 2; x >= -w / 2; x -= step) {
-    let yOffset = Math.sin((x + riverSeed * 100) * freq) * amplitude;
-    ctx.lineTo(cx + x, cy + yOffset + riverYOffset + width);
+    let yOffset = smoothNoise(x);
+    let y = cy + yOffset + riverYOffset + width;
+    // clamp epoxy within wood height
+    if (y > cy + h / 2) y = cy + h / 2;
+    if (y < cy - h / 2) y = cy - h / 2;
+    ctx.lineTo(cx + x, y);
   }
 
   ctx.closePath();
@@ -90,17 +95,36 @@ function drawRiverRect(cx, cy, w, h, color, opacity, width) {
 function drawRiverCircle(cx, cy, r, color, opacity, width) {
   ctx.save();
   ctx.globalAlpha = opacity;
-  ctx.strokeStyle = color;
-  ctx.lineWidth = width;
+  ctx.fillStyle = color;
+
+  const step = 15;
   ctx.beginPath();
-  ctx.arc(cx, cy, r - 40, 0, Math.PI * 2);
-  ctx.stroke();
+
+  // Clip epoxy inside the circle of wood
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.clip();
+
+  ctx.moveTo(cx - r, cy);
+
+  // top edge
+  for (let x = -r; x <= r; x += step) {
+    let yOffset = smoothNoise(x);
+    ctx.lineTo(cx + x, cy + yOffset - width / 2);
+  }
+
+  // bottom edge
+  for (let x = r; x >= -r; x -= step) {
+    let yOffset = smoothNoise(x);
+    ctx.lineTo(cx + x, cy + yOffset + width / 2);
+  }
+
+  ctx.closePath();
+  ctx.fill();
   ctx.restore();
 }
 
 function randomizeRiver() {
-  riverSeed = Math.random(); 
-  // random vertical shift (between -50px and +50px)
+  riverSeed = Math.random();
   riverYOffset = Math.floor(Math.random() * 100 - 50);
   drawTable();
 }
