@@ -46,3 +46,37 @@ footer {
   margin-top: 40px;
   background: #eee;
 }
+/* --- Gallery --- */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.gallery-card {
+  background: var(--card-bg, #1e1e1e);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease;
+  text-align: center;
+}
+
+.gallery-card:hover {
+  transform: translateY(-5px);
+}
+
+.gallery-card img,
+.gallery-card video {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+}
+
+.gallery-card p {
+  padding: 10px;
+  font-size: 0.9rem;
+  color: var(--text-color, #eee);
+}
