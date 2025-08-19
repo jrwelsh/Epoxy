@@ -1,116 +1,165 @@
 const canvas = document.getElementById("builderCanvas");
 const ctx = canvas.getContext("2d");
 
-const shapeSelect = document.getElementById("shapeSelect");
-const sizeSelect = document.getElementById("sizeSelect");
-const woodSelect = document.getElementById("woodSelect");
-const colorPicker = document.getElementById("colorPicker");
-const opacitySlider = document.getElementById("opacitySlider");
-const riverWidthSlider = document.getElementById("riverWidthSlider");
-const randomizeBtn = document.getElementById("randomizeBtn");
+canvas.width = 800;
+canvas.height = 400;
 
-const woodTextures = {
-  oak: "images/wood/oak.jpg",
-  cherry: "images/wood/cherry.jpg",
-  walnut: "images/wood/walnut.jpg",
-  maple: "images/wood/maple.jpg",
-  mahogany: "images/wood/mahogany.jpg"
+const table = {
+  wood: "walnut",
+  epoxyColor: "rgba(0, 0, 255, 0.6)",
+  epoxyWidth: 50,
+  shape: "rectangle",
+  riverPoints: []
 };
 
-let textures = {};
-let riverSeed = Math.random();
+// --- Preload wood textures ---
+const woodTextures = {
+  oak: new Image(),
+  walnut: new Image(),
+  cherry: new Image(),
+  maple: new Image()
+};
 
-function smoothNoise(x) {
-  return Math.sin((x * 0.015) + riverSeed * 30) * 25
-       + Math.sin((x * 0.05) + riverSeed * 60) * 10;
+woodTextures.oak.src = "textures/oak.jpg";
+woodTextures.walnut.src = "textures/walnut.jpg";
+woodTextures.cherry.src = "textures/cherry.jpg";
+woodTextures.maple.src = "textures/maple.jpg";
+
+// --- Generate river path ---
+function generateRiver() {
+  table.riverPoints = [];
+  const points = 8;
+  const amplitude = canvas.height / 4;
+  const taper = 0.5; // don’t taper fully to 0, keeps it natural
+
+  for (let i = 0; i <= points; i++) {
+    const x = (i / points) * canvas.width;
+    const y =
+      canvas.height / 2 +
+      Math.sin(i * 0.8 + Math.random() * 0.5) * (amplitude * taper);
+    table.riverPoints.push({ x, y });
+  }
 }
 
-function taperFactor(x, max) {
-  const dist = Math.abs(x);
-  const t = 1 - (dist / max) ** 2;
-  return Math.max(0.35, t);
-}
-
+// --- Draw the table ---
 function drawTable() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const shape = shapeSelect.value;
-  const size = parseInt(sizeSelect.value);
-  const wood = woodSelect.value;
-  const epoxyColor = colorPicker.value;
-  const opacity = parseFloat(opacitySlider.value);
-  const width = parseInt(riverWidthSlider.value);
 
-  const img = textures[wood];
-  if (!img) return;
+  // Get selected texture
+  const texture = woodTextures[table.wood];
 
-  const cx = canvas.width / 2;
-  const cy = canvas.height / 2;
-  const half = size * 5;
-
-  const pattern = ctx.createPattern(img, "repeat");
-  ctx.save();
-  ctx.fillStyle = pattern;
-
-  if (shape === "circle") {
-    ctx.beginPath();
-    ctx.arc(cx, cy, half, 0, Math.PI*2);
-    ctx.fill();
-    ctx.clip();
-    drawRiverRect(cx, cy, half*2, half*2, epoxyColor, opacity, width);
+  if (texture.complete) {
+    const pattern = ctx.createPattern(texture, "repeat");
+    ctx.fillStyle = pattern;
   } else {
-    const w = half * (shape === "square" ? 1 : 2);
-    const h = half;
-    ctx.fillRect(cx - w/2, cy - h/2, w, h);
-    drawRiverRect(cx, cy, w, h, epoxyColor, opacity, width);
+    ctx.fillStyle = "#8B5A2B"; // fallback brown
   }
 
-  ctx.restore();
-}
+  // Draw wood base by shape
+  if (table.shape === "rectangle") {
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  } else if (table.shape === "square") {
+    const size = Math.min(canvas.width, canvas.height);
+    ctx.fillRect(
+      (canvas.width - size) / 2,
+      (canvas.height - size) / 2,
+      size,
+      size
+    );
+  } else if (table.shape === "circle") {
+    ctx.beginPath();
+    ctx.arc(
+      canvas.width / 2,
+      canvas.height / 2,
+      Math.min(canvas.width, canvas.height) / 2 - 10,
+      0,
+      Math.PI * 2
+    );
+    ctx.closePath();
+    ctx.fill();
+  }
 
-function drawRiverRect(cx, cy, w, h, color, opacity, width) {
+  // Clip epoxy to wood shape
   ctx.save();
-  ctx.globalAlpha = opacity;
-  ctx.fillStyle = color;
-
   ctx.beginPath();
-  ctx.moveTo(cx - w/2, cy + smoothNoise(-w/2));
-  const step = 12;
-
-  for (let x = -w/2; x <= w/2; x += step) {
-    const yOffset = smoothNoise(x);
-    const t = taperFactor(x, w/2);
-    ctx.lineTo(cx + x, cy + yOffset - (width/2) * t);
+  if (table.shape === "rectangle") {
+    ctx.rect(0, 0, canvas.width, canvas.height);
+  } else if (table.shape === "square") {
+    const size = Math.min(canvas.width, canvas.height);
+    ctx.rect(
+      (canvas.width - size) / 2,
+      (canvas.height - size) / 2,
+      size,
+      size
+    );
+  } else if (table.shape === "circle") {
+    ctx.arc(
+      canvas.width / 2,
+      canvas.height / 2,
+      Math.min(canvas.width, canvas.height) / 2 - 10,
+      0,
+      Math.PI * 2
+    );
   }
-  for (let x = w/2; x >= -w/2; x -= step) {
-    const yOffset = smoothNoise(x);
-    const t = taperFactor(x, w/2);
-    ctx.lineTo(cx + x, cy + yOffset + (width/2) * t);
-  }
+  ctx.clip();
 
+  // Epoxy fill
+  ctx.fillStyle = table.epoxyColor;
+  ctx.beginPath();
+  ctx.moveTo(
+    table.riverPoints[0].x,
+    table.riverPoints[0].y - table.epoxyWidth / 2
+  );
+  for (let i = 1; i < table.riverPoints.length; i++) {
+    const p = table.riverPoints[i];
+    ctx.lineTo(p.x, p.y - table.epoxyWidth / 2);
+  }
+  for (let i = table.riverPoints.length - 1; i >= 0; i--) {
+    const p = table.riverPoints[i];
+    ctx.lineTo(p.x, p.y + table.epoxyWidth / 2);
+  }
   ctx.closePath();
   ctx.fill();
+
   ctx.restore();
 }
 
-function randomize() {
-  riverSeed = Math.random();
+// --- Randomizer ---
+document.getElementById("randomize").addEventListener("click", () => {
+  const woods = ["oak", "walnut", "cherry", "maple"];
+  table.wood = woods[Math.floor(Math.random() * woods.length)];
+  table.epoxyColor = `rgba(${Math.floor(Math.random() * 255)}, 
+                           ${Math.floor(Math.random() * 255)}, 
+                           ${Math.floor(Math.random() * 255)}, 0.6)`;
+  table.epoxyWidth = Math.random() * 80 + 20;
+  table.shape = ["rectangle", "square", "circle"][
+    Math.floor(Math.random() * 3)
+  ];
+  generateRiver();
   drawTable();
-}
+});
 
-[shapeSelect, sizeSelect, woodSelect, colorPicker, opacitySlider, riverWidthSlider].forEach(el => el.addEventListener("input", drawTable));
-randomizeBtn.addEventListener("click", randomize);
+// --- Controls ---
+document.getElementById("woodSelect").addEventListener("change", (e) => {
+  table.wood = e.target.value;
+  drawTable();
+});
 
-function preloadTextues(callback) {
-  const keys = Object.keys(woodTextures);
-  let loaded = 0;
-  keys.forEach(k => {
-    const img = new Image();
-    img.src = woodTextures[k];
-    img.onload = () => {
-      textures[k] = img;
-      if (++loaded === keys.length) callback();
-    };
-  });
-}
+document.getElementById("epoxyColor").addEventListener("input", (e) => {
+  table.epoxyColor = e.target.value;
+  drawTable();
+});
 
-preloadTextues(drawTable);
+document.getElementById("epoxyWidth").addEventListener("input", (e) => {
+  table.epoxyWidth = parseInt(e.target.value);
+  drawTable();
+});
+
+document.getElementById("shapeSelect").addEventListener("change", (e) => {
+  table.shape = e.target.value;
+  drawTable();
+});
+
+// --- Initialize ---
+generateRiver();
+drawTable();

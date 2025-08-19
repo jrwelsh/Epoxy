@@ -1,131 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Epoxy Builder - Jaxwel</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>Epoxy River Table Builder</title>
+  <link rel="stylesheet" href="style.css">
   <style>
-    /* Modern Theme */
     body {
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #121212;
+      color: #eaeaea;
       margin: 0;
       padding: 0;
-      background: linear-gradient(135deg, #1e1e2f, #2a2a40);
-      color: #f4f4f4;
     }
-
-    header {
-      background: #111827;
-      padding: 1rem;
-      text-align: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-
-    header h1 {
-      margin: 0;
-      color: #f9fafb;
-      font-size: 1.8rem;
-    }
-
     nav {
-      margin-top: 0.5rem;
+      background: #1e1e1e;
+      padding: 15px;
+      text-align: center;
     }
-
     nav a {
-      margin: 0 1rem;
-      color: #93c5fd;
+      color: #eaeaea;
+      margin: 0 15px;
       text-decoration: none;
       font-weight: bold;
-      transition: color 0.3s;
     }
-
     nav a:hover {
-      color: #60a5fa;
+      color: #4dd0e1;
     }
-
-    main {
+    .builder-container {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      padding: 2rem;
-      gap: 2rem;
+      flex-direction: row;
+      justify-content: space-around;
+      align-items: flex-start;
+      padding: 20px;
     }
-
+    canvas {
+      border: 2px solid #444;
+      border-radius: 10px;
+      background: #2b2b2b; /* Ensures dark background for epoxy/wood contrast */
+    }
     .controls {
-      background: #1f2937;
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      flex: 1 1 300px;
-      max-width: 350px;
+      background: #1e1e1e;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
     }
-
-    .controls h2 {
-      margin-top: 0;
-      font-size: 1.3rem;
-      border-bottom: 1px solid #374151;
-      padding-bottom: 0.5rem;
-      color: #f9fafb;
-    }
-
-    .controls label {
+    label {
       display: block;
-      margin-top: 1rem;
-      font-weight: 500;
+      margin-top: 10px;
     }
-
-    .controls input,
-    .controls select,
-    .controls button {
-      margin-top: 0.3rem;
+    select, input, button {
+      margin-top: 5px;
       width: 100%;
-      padding: 0.5rem;
-      border-radius: 6px;
+      padding: 8px;
+      border-radius: 5px;
       border: none;
-      font-size: 1rem;
     }
-
-    .controls button {
-      background: #2563eb;
-      color: white;
+    button {
+      background: #4dd0e1;
+      color: black;
       font-weight: bold;
       cursor: pointer;
-      margin-top: 1rem;
-      transition: background 0.3s;
+      margin-top: 15px;
     }
-
-    .controls button:hover {
-      background: #1d4ed8;
-    }
-
-    canvas {
-      background: #f9fafb;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      flex: 2 1 500px;
-      max-width: 800px;
+    button:hover {
+      background: #26c6da;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Epoxy Builder</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="builder.html">Epoxy Builder</a>
-      <a href="gallery.html">Gallery</a>
-      <a href="about.html">About</a>
-      <a href="contact.html">Contact</a>
-    </nav>
-  </header>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="gallery.html">Gallery</a>
+    <a href="builder.html">Builder</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
 
-  <main>
+  <div class="builder-container">
+    <canvas id="tableCanvas" width="500" height="400"></canvas>
     <div class="controls">
-      <h2>Design Controls</h2>
+      <label for="shape">Table Shape:</label>
+      <select id="shape">
+        <option value="rectangle">Rectangle</option>
+        <option value="square">Square</option>
+        <option value="circle">Circle</option>
+      </select>
 
       <label for="wood">Wood Type:</label>
       <select id="wood">
@@ -135,28 +94,15 @@
         <option value="maple">Maple</option>
       </select>
 
-      <label for="color">Epoxy Color:</label>
-      <input type="color" id="color" value="#1E90FF" />
+      <label for="epoxyColor">Epoxy Color:</label>
+      <input type="color" id="epoxyColor" value="#00bcd4">
 
-      <label for="opacity">Epoxy Opacity:</label>
-      <input type="range" id="opacity" min="0" max="1" step="0.1" value="0.8" />
+      <label for="epoxyWidth">Epoxy Width:</label>
+      <input type="range" id="epoxyWidth" min="50" max="200" value="100">
 
-      <label for="shape">Epoxy Shape:</label>
-      <select id="shape">
-        <option value="river">River</option>
-        <option value="rectangle">Rectangle</option>
-        <option value="circle">Circle</option>
-        <option value="square">Square</option>
-      </select>
-
-      <label for="width">Epoxy Width:</label>
-      <input type="range" id="width" min="50" max="300" step="10" value="150" />
-
-      <button id="randomize">Randomize Design</button>
+      <button id="randomize">Randomize River</button>
     </div>
-
-    <canvas id="epoxyCanvas" width="800" height="500"></canvas>
-  </main>
+  </div>
 
   <script src="builder.js"></script>
 </body>
