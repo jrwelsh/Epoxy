@@ -1,126 +1,112 @@
 const canvas = document.getElementById("builderCanvas");
 const ctx = canvas.getContext("2d");
 
-const woodSelect = document.getElementById("woodSelect");
-const epoxyColorInput = document.getElementById("epoxyColor");
-const opacityInput = document.getElementById("opacity");
-const shapeSelect = document.getElementById("shapeSelect");
-const widthInput = document.getElementById("width");
-const randomizeBtn = document.getElementById("randomize");
+// Default state
+let woodType = "oak";
+let epoxyColor = "#1E90FF";
+let epoxyOpacity = 0.7;
+let epoxyShape = "river";
+let epoxyWidth = 150;
 
-// Wood texture images
-const woodTextures = {
-  oak: "textures/oak.jpg",
-  cherry: "textures/cherry.jpg",
-  walnut: "textures/walnut.jpg",
+// Fallback wood colors
+const woodColors = {
+  oak: "#C19A6B",
+  cherry: "#A45A52",
+  walnut: "#5C4033",
 };
 
-const woodImages = {};
-let loaded = false;
-
-// Preload textures
-let loadCount = 0;
-for (let key in woodTextures) {
-  const img = new Image();
-  img.src = woodTextures[key];
-  img.onload = () => {
-    woodImages[key] = img;
-    loadCount++;
-    if (loadCount === Object.keys(woodTextures).length) {
-      loaded = true;
-      drawTable();
-    }
-  };
-}
-
-// Main draw function
+// Draw table
 function drawTable() {
-  if (!loaded) return;
-
-  const wood = woodSelect.value;
-  const epoxyColor = epoxyColorInput.value;
-  const epoxyOpacity = parseFloat(opacityInput.value);
-  const shape = shapeSelect.value;
-  const epoxyWidth = parseInt(widthInput.value);
-
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Draw wood background
-  ctx.drawImage(woodImages[wood], 0, 0, canvas.width, canvas.height);
+  // Wood background
+  ctx.fillStyle = woodColors[woodType] || "#8B5A2B";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  ctx.fillStyle = hexToRGBA(epoxyColor, epoxyOpacity);
+  // Epoxy
+  ctx.globalAlpha = epoxyOpacity;
+  ctx.fillStyle = epoxyColor;
 
-  if (shape === "river") {
-    drawRiver(epoxyWidth);
-  } else if (shape === "square") {
-    const x = canvas.width / 2 - epoxyWidth / 2;
-    ctx.fillRect(x, 0, epoxyWidth, canvas.height);
-  } else if (shape === "circle") {
-    const radius = Math.min(epoxyWidth, canvas.height / 2) * 0.8;
-    ctx.beginPath();
-    ctx.arc(canvas.width / 2, canvas.height / 2, radius, 0, Math.PI * 2);
-    ctx.fill();
+  if (epoxyShape === "river") {
+    drawRiver();
+  } else if (epoxyShape === "square") {
+    drawSquare();
+  } else if (epoxyShape === "circle") {
+    drawCircle();
   }
+
+  ctx.globalAlpha = 1.0; // reset
 }
 
-// Draw river epoxy
-function drawRiver(width) {
+function drawRiver() {
+  const midX = canvas.width / 2;
+  const riverWidth = epoxyWidth;
+
   ctx.beginPath();
-  const mid = canvas.width / 2;
-  const taperStart = 0.6; // taper factor
-
-  for (let y = 0; y <= canvas.height; y++) {
-    const taper = 1 - (y / canvas.height) * taperStart;
-    const offset = Math.sin(y * 0.02) * 20; // smoother wave
-    const halfWidth = (width / 2) * taper;
-
-    const x = mid + offset;
-    if (y === 0) ctx.moveTo(x - halfWidth, y);
-    else ctx.lineTo(x - halfWidth, y);
+  ctx.moveTo(midX - riverWidth / 2, 0);
+  for (let y = 0; y <= canvas.height; y += 20) {
+    const offset = Math.sin(y * 0.05) * 20;
+    ctx.lineTo(midX - riverWidth / 2 + offset, y);
   }
-  for (let y = canvas.height; y >= 0; y--) {
-    const taper = 1 - (y / canvas.height) * taperStart;
-    const offset = Math.sin(y * 0.02) * 20;
-    const halfWidth = (width / 2) * taper;
-
-    const x = mid + offset;
-    ctx.lineTo(x + halfWidth, y);
+  for (let y = canvas.height; y >= 0; y -= 20) {
+    const offset = Math.sin(y * 0.05) * 20;
+    ctx.lineTo(midX + riverWidth / 2 + offset, y);
   }
   ctx.closePath();
   ctx.fill();
 }
 
-// Randomize button
-randomizeBtn.addEventListener("click", () => {
-  woodSelect.value = randomChoice(Object.keys(woodTextures));
-  epoxyColorInput.value = randomColor();
-  opacityInput.value = Math.random().toFixed(2);
-  shapeSelect.value = randomChoice(["river", "square", "circle"]);
-  widthInput.value = Math.floor(Math.random() * 180) + 20;
+function drawSquare() {
+  const x = (canvas.width - epoxyWidth) / 2;
+  const y = canvas.height / 4;
+  ctx.fillRect(x, y, epoxyWidth, canvas.height / 2);
+}
+
+function drawCircle() {
+  const radius = epoxyWidth / 2;
+  ctx.beginPath();
+  ctx.arc(canvas.width / 2, canvas.height / 2, radius, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+// Event listeners
+document.getElementById("wood").addEventListener("change", e => {
+  woodType = e.target.value;
+  drawTable();
+});
+document.getElementById("color").addEventListener("input", e => {
+  epoxyColor = e.target.value;
+  drawTable();
+});
+document.getElementById("opacity").addEventListener("input", e => {
+  epoxyOpacity = parseFloat(e.target.value);
+  drawTable();
+});
+document.getElementById("shape").addEventListener("change", e => {
+  epoxyShape = e.target.value;
+  drawTable();
+});
+document.getElementById("width").addEventListener("input", e => {
+  epoxyWidth = parseInt(e.target.value, 10);
+  drawTable();
+});
+document.getElementById("randomize").addEventListener("click", () => {
+  const woods = ["oak", "cherry", "walnut"];
+  woodType = woods[Math.floor(Math.random() * woods.length)];
+  epoxyColor = `hsl(${Math.random() * 360}, 70%, 50%)`;
+  epoxyOpacity = Math.random().toFixed(2);
+  epoxyShape = ["river", "square", "circle"][Math.floor(Math.random() * 3)];
+  epoxyWidth = 50 + Math.floor(Math.random() * 250);
+
+  // Update controls
+  document.getElementById("wood").value = woodType;
+  document.getElementById("color").value = epoxyColor;
+  document.getElementById("opacity").value = epoxyOpacity;
+  document.getElementById("shape").value = epoxyShape;
+  document.getElementById("width").value = epoxyWidth;
+
   drawTable();
 });
 
-// Event listeners
-[woodSelect, epoxyColorInput, opacityInput, shapeSelect, widthInput].forEach(el => {
-  el.addEventListener("input", drawTable);
-});
-
-// Helpers
-function hexToRGBA(hex, alpha) {
-  const bigint = parseInt(hex.slice(1), 16);
-  const r = (bigint >> 16) & 255;
-  const g = (bigint >> 8) & 255;
-  const b = bigint & 255;
-  return `rgba(${r},${g},${b},${alpha})`;
-}
-
-function randomChoice(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
-
-function randomColor() {
-  const r = Math.floor(Math.random() * 256);
-  const g = Math.floor(Math.random() * 256);
-  const b = Math.floor(Math.random() * 256);
-  return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
-}
+// Initial draw
+drawTable();
