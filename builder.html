@@ -16,37 +16,37 @@
     <a href="contact.html">Contact</a>
   </nav>
 
-  <main class="container">
+  <main class="builder-container">
     <h1>Epoxy Table Builder</h1>
-    <canvas id="builderCanvas" width="800" height="400"></canvas>
 
-    <div class="controls">
-      <label for="woodType">Wood Type:</label>
-      <select id="woodType">
+    <div class="builder-controls">
+      <label for="woodSelect">Wood Type:</label>
+      <select id="woodSelect">
         <option value="oak">Oak</option>
-        <option value="walnut">Walnut</option>
         <option value="cherry">Cherry</option>
-        <option value="maple">Maple</option>
+        <option value="walnut">Walnut</option>
       </select>
 
       <label for="epoxyColor">Epoxy Color:</label>
-      <input type="color" id="epoxyColor" value="#1e90ff">
+      <input type="color" id="epoxyColor" value="#0077ff">
 
-      <label for="epoxyOpacity">Epoxy Opacity:</label>
-      <input type="range" id="epoxyOpacity" min="0" max="100" value="100">
+      <label for="opacity">Epoxy Opacity:</label>
+      <input type="range" id="opacity" min="0" max="1" step="0.05" value="0.6">
 
-      <label for="riverWidth">River Width:</label>
-      <input type="range" id="riverWidth" min="20" max="200" value="100">
-
-      <label for="shape">Shape:</label>
-      <select id="shape">
+      <label for="shapeSelect">Shape:</label>
+      <select id="shapeSelect">
         <option value="river">River</option>
-        <option value="circle">Circle</option>
         <option value="square">Square</option>
+        <option value="circle">Circle</option>
       </select>
 
-      <button id="randomizeBtn">Randomize</button>
+      <label for="width">Epoxy Width:</label>
+      <input type="range" id="width" min="20" max="200" value="80">
+
+      <button id="randomize">Randomize</button>
     </div>
+
+    <canvas id="builderCanvas" width="800" height="400"></canvas>
   </main>
 
   <script src="builder.js"></script>

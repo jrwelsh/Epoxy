@@ -1,116 +1,126 @@
 const canvas = document.getElementById("builderCanvas");
 const ctx = canvas.getContext("2d");
 
-// Load wood textures
+const woodSelect = document.getElementById("woodSelect");
+const epoxyColorInput = document.getElementById("epoxyColor");
+const opacityInput = document.getElementById("opacity");
+const shapeSelect = document.getElementById("shapeSelect");
+const widthInput = document.getElementById("width");
+const randomizeBtn = document.getElementById("randomize");
+
+// Wood texture images
 const woodTextures = {
-  oak: "https://i.imgur.com/E3T4z6h.jpg",
-  walnut: "https://i.imgur.com/2cOaZsJ.jpg",
-  cherry: "https://i.imgur.com/6kphbP3.jpg",
-  maple: "https://i.imgur.com/f7Y0iCw.jpg"
+  oak: "textures/oak.jpg",
+  cherry: "textures/cherry.jpg",
+  walnut: "textures/walnut.jpg",
 };
 
 const woodImages = {};
-for (let type in woodTextures) {
+let loaded = false;
+
+// Preload textures
+let loadCount = 0;
+for (let key in woodTextures) {
   const img = new Image();
-  img.src = woodTextures[type];
-  woodImages[type] = img;
+  img.src = woodTextures[key];
+  img.onload = () => {
+    woodImages[key] = img;
+    loadCount++;
+    if (loadCount === Object.keys(woodTextures).length) {
+      loaded = true;
+      drawTable();
+    }
+  };
 }
 
-let currentWood = "oak";
-let epoxy = "#1e90ff";
-let epoxyOpacity = 1.0;
-let width = 100;
-let currentShape = "river";
-
+// Main draw function
 function drawTable() {
+  if (!loaded) return;
+
+  const wood = woodSelect.value;
+  const epoxyColor = epoxyColorInput.value;
+  const epoxyOpacity = parseFloat(opacityInput.value);
+  const shape = shapeSelect.value;
+  const epoxyWidth = parseInt(widthInput.value);
+
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // === Draw wood background ===
-  const woodImg = woodImages[currentWood];
-  if (woodImg.complete) {
-    const pattern = ctx.createPattern(woodImg, "repeat");
-    ctx.fillStyle = pattern;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-  } else {
-    woodImg.onload = () => drawTable();
-  }
+  // Draw wood background
+  ctx.drawImage(woodImages[wood], 0, 0, canvas.width, canvas.height);
 
-  // === Draw epoxy river ===
-  ctx.save();
-  if (currentShape === "circle") {
+  ctx.fillStyle = hexToRGBA(epoxyColor, epoxyOpacity);
+
+  if (shape === "river") {
+    drawRiver(epoxyWidth);
+  } else if (shape === "square") {
+    const x = canvas.width / 2 - epoxyWidth / 2;
+    ctx.fillRect(x, 0, epoxyWidth, canvas.height);
+  } else if (shape === "circle") {
+    const radius = Math.min(epoxyWidth, canvas.height / 2) * 0.8;
     ctx.beginPath();
-    ctx.arc(canvas.width / 2, canvas.height / 2, 180, 0, Math.PI * 2);
-    ctx.clip();
-  }
-
-  ctx.fillStyle = epoxy;
-
-  // Apply opacity
-  ctx.globalAlpha = epoxyOpacity;
-
-  let midX = canvas.width / 2;
-  let riverPath = new Path2D();
-
-  if (currentShape === "river") {
-    riverPath.moveTo(midX - width / 2, 0);
-    for (let y = 0; y <= canvas.height; y += 20) {
-      let offset = Math.sin(y / 50) * 25;
-      let taper = 0.3 + 0.7 * (1 - Math.abs((y - canvas.height / 2) / (canvas.height / 2)));
-      riverPath.lineTo(midX - (width / 2) * taper + offset, y);
-    }
-    for (let y = canvas.height; y >= 0; y -= 20) {
-      let offset = Math.sin(y / 50) * 25;
-      let taper = 0.3 + 0.7 * (1 - Math.abs((y - canvas.height / 2) / (canvas.height / 2)));
-      riverPath.lineTo(midX + (width / 2) * taper + offset, y);
-    }
-    riverPath.closePath();
-    ctx.fill(riverPath);
-  } else if (currentShape === "square") {
-    ctx.fillRect(midX - width / 2, 50, width, canvas.height - 100);
-  } else if (currentShape === "circle") {
-    ctx.beginPath();
-    ctx.arc(midX, canvas.height / 2, width / 2, 0, Math.PI * 2);
+    ctx.arc(canvas.width / 2, canvas.height / 2, radius, 0, Math.PI * 2);
     ctx.fill();
   }
-
-  ctx.restore();
-  ctx.globalAlpha = 1.0;
 }
 
-// === Event Listeners ===
-document.getElementById("woodType").addEventListener("change", e => {
-  currentWood = e.target.value;
+// Draw river epoxy
+function drawRiver(width) {
+  ctx.beginPath();
+  const mid = canvas.width / 2;
+  const taperStart = 0.6; // taper factor
+
+  for (let y = 0; y <= canvas.height; y++) {
+    const taper = 1 - (y / canvas.height) * taperStart;
+    const offset = Math.sin(y * 0.02) * 20; // smoother wave
+    const halfWidth = (width / 2) * taper;
+
+    const x = mid + offset;
+    if (y === 0) ctx.moveTo(x - halfWidth, y);
+    else ctx.lineTo(x - halfWidth, y);
+  }
+  for (let y = canvas.height; y >= 0; y--) {
+    const taper = 1 - (y / canvas.height) * taperStart;
+    const offset = Math.sin(y * 0.02) * 20;
+    const halfWidth = (width / 2) * taper;
+
+    const x = mid + offset;
+    ctx.lineTo(x + halfWidth, y);
+  }
+  ctx.closePath();
+  ctx.fill();
+}
+
+// Randomize button
+randomizeBtn.addEventListener("click", () => {
+  woodSelect.value = randomChoice(Object.keys(woodTextures));
+  epoxyColorInput.value = randomColor();
+  opacityInput.value = Math.random().toFixed(2);
+  shapeSelect.value = randomChoice(["river", "square", "circle"]);
+  widthInput.value = Math.floor(Math.random() * 180) + 20;
   drawTable();
 });
 
-document.getElementById("epoxyColor").addEventListener("input", e => {
-  epoxy = e.target.value;
-  drawTable();
+// Event listeners
+[woodSelect, epoxyColorInput, opacityInput, shapeSelect, widthInput].forEach(el => {
+  el.addEventListener("input", drawTable);
 });
 
-document.getElementById("epoxyOpacity").addEventListener("input", e => {
-  epoxyOpacity = parseFloat(e.target.value) / 100;
-  drawTable();
-});
+// Helpers
+function hexToRGBA(hex, alpha) {
+  const bigint = parseInt(hex.slice(1), 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+  return `rgba(${r},${g},${b},${alpha})`;
+}
 
-document.getElementById("riverWidth").addEventListener("input", e => {
-  width = parseInt(e.target.value);
-  drawTable();
-});
+function randomChoice(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
 
-document.getElementById("shape").addEventListener("change", e => {
-  currentShape = e.target.value;
-  drawTable();
-});
-
-document.getElementById("randomizeBtn").addEventListener("click", () => {
-  const woods = Object.keys(woodTextures);
-  currentWood = woods[Math.floor(Math.random() * woods.length)];
-  epoxy = "#" + Math.floor(Math.random() * 16777215).toString(16);
-  epoxyOpacity = Math.random();
-  width = 50 + Math.floor(Math.random() * 150);
-  drawTable();
-});
-
-// === Initial draw ===
-drawTable();
+function randomColor() {
+  const r = Math.floor(Math.random() * 256);
+  const g = Math.floor(Math.random() * 256);
+  const b = Math.floor(Math.random() * 256);
+  return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+}
