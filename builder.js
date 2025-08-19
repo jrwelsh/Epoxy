@@ -10,12 +10,18 @@ const riverWidthSlider = document.getElementById("riverWidth");
 const randomizeBtn = document.getElementById("randomize");
 
 let riverSeed = Math.random();
-let riverYOffset = 0;
 
-// Utility: smooth random function (organic river)
+// Smooth organic function
 function smoothNoise(x) {
   return Math.sin(x * 0.3 + riverSeed * 10) * 20 +
          Math.sin(x * 0.05 + riverSeed * 50) * 10;
+}
+
+function taperFactor(x, maxSpan) {
+  // Returns a multiplier (1 in center, 0 near edges)
+  const edgeDist = Math.min(Math.abs(x), maxSpan);
+  const taper = 1 - (edgeDist / maxSpan) ** 2; // quadratic falloff
+  return Math.max(0, taper);
 }
 
 function drawTable() {
@@ -66,26 +72,24 @@ function drawRiverRect(cx, cy, w, h, color, opacity, width) {
   ctx.globalAlpha = opacity;
   ctx.fillStyle = color;
 
-  const step = 20;
+  const step = 15;
 
   ctx.beginPath();
+  ctx.moveTo(cx - w / 2, cy + smoothNoise(-w / 2)); // start left edge
 
-  // Start left side top edge
-  ctx.moveTo(cx - w / 2, cy + smoothNoise(-w / 2) - width / 2);
-
-  // Top edge
+  // Top edge (tapered)
   for (let x = -w / 2; x <= w / 2; x += step) {
     let yOffset = smoothNoise(x);
-    let y = cy + yOffset - width / 2;
-    if (y < cy - h / 2) y = cy - h / 2; // clamp
+    let taper = taperFactor(x, w / 2);
+    let y = cy + yOffset - (width / 2) * taper;
     ctx.lineTo(cx + x, y);
   }
 
-  // Bottom edge
+  // Bottom edge (tapered)
   for (let x = w / 2; x >= -w / 2; x -= step) {
     let yOffset = smoothNoise(x);
-    let y = cy + yOffset + width / 2;
-    if (y > cy + h / 2) y = cy + h / 2; // clamp
+    let taper = taperFactor(x, w / 2);
+    let y = cy + yOffset + (width / 2) * taper;
     ctx.lineTo(cx + x, y);
   }
 
@@ -99,27 +103,30 @@ function drawRiverCircle(cx, cy, r, color, opacity, width) {
   ctx.globalAlpha = opacity;
   ctx.fillStyle = color;
 
-  const step = 15;
+  const step = 10;
+
   ctx.beginPath();
 
-  // Clip inside circle of wood
+  // Clip inside the wood circle
   ctx.arc(cx, cy, r, 0, Math.PI * 2);
   ctx.clip();
 
-  // Start at left edge of circle
-  ctx.moveTo(cx - r, cy + smoothNoise(-r) - width / 2);
+  // Start left edge
+  ctx.moveTo(cx - r, cy + smoothNoise(-r));
 
-  // Top edge of river band
+  // Top edge band
   for (let x = -r; x <= r; x += step) {
     let yOffset = smoothNoise(x);
-    let y = cy + yOffset - width / 2;
+    let taper = taperFactor(x, r);
+    let y = cy + yOffset - (width / 2) * taper;
     ctx.lineTo(cx + x, y);
   }
 
-  // Bottom edge of river band
+  // Bottom edge band
   for (let x = r; x >= -r; x -= step) {
     let yOffset = smoothNoise(x);
-    let y = cy + yOffset + width / 2;
+    let taper = taperFactor(x, r);
+    let y = cy + yOffset + (width / 2) * taper;
     ctx.lineTo(cx + x, y);
   }
 
@@ -130,7 +137,6 @@ function drawRiverCircle(cx, cy, r, color, opacity, width) {
 
 function randomizeRiver() {
   riverSeed = Math.random();
-  riverYOffset = Math.floor(Math.random() * 100 - 50);
   drawTable();
 }
 
