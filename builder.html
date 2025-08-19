@@ -2,67 +2,46 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Epoxy Builder</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Epoxy Table Builder</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; text-align: center; }
+    canvas { border: 1px solid #333; margin-top: 15px; }
+    .controls { margin: 20px 0; }
+    label { margin: 0 10px; }
+  </style>
 </head>
 <body>
-  <!-- Navigation -->
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="gallery.html">Gallery</a>
-    <a href="about.html">About</a>
-    <a href="contact.html">Contact</a>
-    <a href="builder.html" class="active">Builder</a>
-  </nav>
-
   <h1>Epoxy Table Builder</h1>
 
-  <!-- Options -->
-  <div id="controls">
+  <div class="controls">
     <label>Shape:
-      <select id="shape">
-        <option value="rectangle">Rectangle</option>
-        <option value="square">Square</option>
-        <option value="circle">Circle</option>
-      </select>
+      <select id="shapeSelect"><option value="rectangle">Rectangle</option><option value="square">Square</option><option value="circle">Circle</option></select>
     </label>
 
     <label>Size:
-      <select id="size">
-        <option value="28">28"</option>
-        <option value="34">34"</option>
-        <option value="40">40"</option>
-      </select>
+      <select id="sizeSelect"><option value="28">28″</option><option value="34">34″</option><option value="40">40″</option></select>
     </label>
 
-    <label>Wood Type:
-      <select id="wood">
-        <option value="oak">Oak</option>
-        <option value="cherry">Cherry</option>
-        <option value="walnut">Walnut</option>
-        <option value="maple">Maple</option>
-        <option value="mahogany">Mahogany</option>
-      </select>
+    <label>Wood:
+      <select id="woodSelect"><option value="oak">Oak</option><option value="cherry">Cherry</option><option value="walnut">Walnut</option><option value="maple">Maple</option><option value="mahogany">Mahogany</option></select>
     </label>
 
     <label>Epoxy Color:
-      <input type="color" id="epoxyColor" value="#0000ff">
+      <input type="color" id="colorPicker" value="#0066ff">
     </label>
 
-    <label>Epoxy Opacity:
-      <input type="range" id="opacity" min="0.1" max="1" step="0.1" value="0.7">
+    <label>Opacity:
+      <input type="range" id="opacitySlider" min="0.1" max="1" step="0.05" value="0.7">
     </label>
 
     <label>River Width:
-      <input type="range" id="riverWidth" min="30" max="120" step="5" value="60">
+      <input type="range" id="riverWidthSlider" min="10" max="100" step="5" value="40">
     </label>
 
-    <button id="randomize">Randomize River</button>
+    <button id="randomizeBtn">Randomize</button>
   </div>
 
-  <!-- Preview -->
-  <canvas id="tableCanvas" width="500" height="500"></canvas>
+  <canvas id="builderCanvas" width="600" height="400"></canvas>
 
   <script src="builder.js"></script>
 </body>
