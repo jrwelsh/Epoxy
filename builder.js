@@ -1,131 +1,94 @@
-console.log("Builder.js loaded ✅");
+// Builder.js (must match lowercase name in HTML)
+
 const canvas = document.getElementById("builderCanvas");
 const ctx = canvas.getContext("2d");
 
-canvas.width = 800;
-canvas.height = 400;
+const woodType = document.getElementById("woodType");
+const epoxyColor = document.getElementById("epoxyColor");
+const shape = document.getElementById("shape");
+const riverWidth = document.getElementById("riverWidth");
+const randomizeBtn = document.getElementById("randomize");
 
-const table = {
-  wood: "walnut",
-  epoxyColor: "rgba(0, 0, 255, 0.6)",
-  epoxyWidth: 50,
-  shape: "rectangle",
-  riverPoints: []
-};
-
-// --- Wood textures (optional) ---
+// Placeholder wood textures (replace with actual images later)
 const woodTextures = {
-  oak: new Image(),
-  walnut: new Image(),
-  cherry: new Image(),
-  maple: new Image()
+  oak: "#c8ad7f",
+  walnut: "#5c4033",
+  cherry: "#d2691e",
+  maple: "#ffe4b5",
 };
 
-woodTextures.oak.src = "textures/oak.jpg";
-woodTextures.walnut.src = "textures/walnut.jpg";
-woodTextures.cherry.src = "textures/cherry.jpg";
-woodTextures.maple.src = "textures/maple.jpg";
-
-// --- Generate river path ---
-function generateRiver() {
-  table.riverPoints = [];
-  const points = 8;
-  const amplitude = canvas.height / 4;
-  const taper = 0.5;
-
-  for (let i = 0; i <= points; i++) {
-    const x = (i / points) * canvas.width;
-    const y =
-      canvas.height / 2 +
-      Math.sin(i * 0.8 + Math.random() * 0.5) * (amplitude * taper);
-    table.riverPoints.push({ x, y });
-  }
-}
-
-// --- Draw table ---
 function drawTable() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // 1. Draw WOOD (fallback color first)
-  ctx.fillStyle = "#8B5A2B"; // fallback brown
-  ctx.beginPath();
-  if (table.shape === "rectangle") {
-    ctx.rect(0, 0, canvas.width, canvas.height);
-  } else if (table.shape === "square") {
-    const size = Math.min(canvas.width, canvas.height);
-    ctx.rect(
-      (canvas.width - size) / 2,
-      (canvas.height - size) / 2,
-      size,
-      size
-    );
-  } else if (table.shape === "circle") {
-    ctx.arc(
-      canvas.width / 2,
-      canvas.height / 2,
-      Math.min(canvas.width, canvas.height) / 2 - 10,
-      0,
-      Math.PI * 2
-    );
-  }
-  ctx.closePath();
-  ctx.fill();
+  const selectedWood = woodType.value;
+  const epoxy = epoxyColor.value;
+  const currentShape = shape.value;
+  const width = parseInt(riverWidth.value);
 
-  // 2. Draw EPOXY
-  ctx.fillStyle = table.epoxyColor;
+  // Draw background wood
+  ctx.fillStyle = woodTextures[selectedWood];
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = epoxy;
   ctx.beginPath();
-  ctx.moveTo(
-    table.riverPoints[0].x,
-    table.riverPoints[0].y - table.epoxyWidth / 2
-  );
-  for (let i = 1; i < table.riverPoints.length; i++) {
-    const p = table.riverPoints[i];
-    ctx.lineTo(p.x, p.y - table.epoxyWidth / 2);
+
+  if (currentShape === "rectangle" || currentShape === "square") {
+    // Natural river
+    let riverPath = new Path2D();
+    let midX = canvas.width / 2;
+    riverPath.moveTo(midX - width / 2, 0);
+
+    for (let y = 0; y <= canvas.height; y += 20) {
+      let offset = Math.sin(y / 40) * 30; // smoother wave
+      riverPath.lineTo(midX - width / 2 + offset, y);
+    }
+
+    for (let y = canvas.height; y >= 0; y -= 20) {
+      let offset = Math.sin(y / 40) * 30;
+      riverPath.lineTo(midX + width / 2 + offset, y);
+    }
+
+    riverPath.closePath();
+    ctx.fill(riverPath);
+
+  } else if (currentShape === "circle") {
+    // Circle with epoxy river through middle
+    ctx.beginPath();
+    ctx.arc(canvas.width / 2, canvas.height / 2, 180, 0, Math.PI * 2);
+    ctx.clip();
+
+    ctx.fillStyle = epoxy;
+    let midX = canvas.width / 2;
+    let riverPath = new Path2D();
+    riverPath.moveTo(midX - width / 2, 0);
+
+    for (let y = 0; y <= canvas.height; y += 20) {
+      let offset = Math.sin(y / 50) * 25;
+      riverPath.lineTo(midX - width / 2 + offset, y);
+    }
+    for (let y = canvas.height; y >= 0; y -= 20) {
+      let offset = Math.sin(y / 50) * 25;
+      riverPath.lineTo(midX + width / 2 + offset, y);
+    }
+
+    riverPath.closePath();
+    ctx.fill(riverPath);
   }
-  for (let i = table.riverPoints.length - 1; i >= 0; i--) {
-    const p = table.riverPoints[i];
-    ctx.lineTo(p.x, p.y + table.epoxyWidth / 2);
-  }
-  ctx.closePath();
-  ctx.fill();
 }
 
-// --- Randomizer ---
-document.getElementById("randomize").addEventListener("click", () => {
-  const woods = ["oak", "walnut", "cherry", "maple"];
-  table.wood = woods[Math.floor(Math.random() * woods.length)];
-  table.epoxyColor = `rgba(${Math.floor(Math.random() * 255)}, 
-                           ${Math.floor(Math.random() * 255)}, 
-                           ${Math.floor(Math.random() * 255)}, 0.6)`;
-  table.epoxyWidth = Math.random() * 80 + 20;
-  table.shape = ["rectangle", "square", "circle"][
-    Math.floor(Math.random() * 3)
-  ];
-  generateRiver();
+function randomize() {
+  const woods = Object.keys(woodTextures);
+  woodType.value = woods[Math.floor(Math.random() * woods.length)];
+  shape.value = ["rectangle", "square", "circle"][Math.floor(Math.random() * 3)];
+  riverWidth.value = Math.floor(Math.random() * 150) + 20;
+  epoxyColor.value = "#" + Math.floor(Math.random() * 16777215).toString(16);
   drawTable();
-});
+}
 
-// --- Controls ---
-document.getElementById("woodSelect").addEventListener("change", (e) => {
-  table.wood = e.target.value;
-  drawTable();
-});
+woodType.addEventListener("change", drawTable);
+epoxyColor.addEventListener("input", drawTable);
+shape.addEventListener("change", drawTable);
+riverWidth.addEventListener("input", drawTable);
+randomizeBtn.addEventListener("click", randomize);
 
-document.getElementById("epoxyColor").addEventListener("input", (e) => {
-  table.epoxyColor = e.target.value;
-  drawTable();
-});
-
-document.getElementById("epoxyWidth").addEventListener("input", (e) => {
-  table.epoxyWidth = parseInt(e.target.value);
-  drawTable();
-});
-
-document.getElementById("shapeSelect").addEventListener("change", (e) => {
-  table.shape = e.target.value;
-  drawTable();
-});
-
-// --- Initialize ---
-generateRiver();
 drawTable();
