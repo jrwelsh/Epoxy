@@ -1,219 +1,229 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Table Builder</title>
+  <meta charset="UTF-8">
+  <title>River Table Builder</title>
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
-      background: #1e1e1e;
-      color: #f5f5f5;
-    }
-    nav {
-      background: #111;
-      padding: 1rem;
-      display: flex;
-      justify-content: space-around;
-      border-bottom: 2px solid #333;
-    }
-    nav a {
-      color: #f5f5f5;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    nav a:hover {
-      color: #00aaff;
-    }
-    .builder-container {
-      display: flex;
-      gap: 2rem;
-      padding: 2rem;
-    }
-    canvas {
-      background: #444;
-      border-radius: 12px;
-      flex: 2;
-    }
-    .controls {
-      flex: 1;
+      font-family: sans-serif;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
-      background: #2a2a2a;
+      align-items: center;
+      background: #f4f4f4;
+    }
+    header {
+      background: #333;
+      color: white;
       padding: 1rem;
-      border-radius: 12px;
-    }
-    label {
-      font-size: 0.9rem;
-      font-weight: bold;
-    }
-    select, input[type=range] {
+      text-align: center;
       width: 100%;
+    }
+    nav {
+      margin-top: 0.5rem;
+    }
+    nav a {
+      color: white;
+      margin: 0 1rem;
+      text-decoration: none;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin: 1rem;
+    }
+    .control-group {
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    canvas {
+      background: #ddd;
+      margin: 1rem;
+      border-radius: 8px;
     }
   </style>
 </head>
 <body>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="builder.html">Builder</a>
-    <a href="gallery.html">Gallery</a>
-    <a href="contact.html">Contact</a>
-  </nav>
+  <header>
+    <h1>River Table Builder</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="builder.html">Builder</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
 
-  <div class="builder-container">
-    <canvas id="tableCanvas" width="600" height="400"></canvas>
-    <div class="controls">
-      <label for="shapeSelect">Table Shape</label>
-      <select id="shapeSelect">
-        <option value="rectangle">Rectangle</option>
-        <option value="square">Square</option>
-        <option value="circle">Circle</option>
-      </select>
-
-      <label for="woodSelect">Wood Type</label>
-      <select id="woodSelect">
-        <option value="oak">Oak</option>
-        <option value="walnut">Walnut</option>
-        <option value="cherry">Cherry</option>
-        <option value="maple">Maple</option>
-      </select>
-
-      <label for="epoxyColor">Epoxy Color</label>
-      <input type="color" id="epoxyColor" value="#00aaff"/>
-
-      <label for="epoxyOpacity">Epoxy Opacity</label>
-      <input type="range" id="epoxyOpacity" min="0" max="1" step="0.05" value="0.6"/>
-
-      <label for="riverWidth">River Width</label>
-      <input type="range" id="riverWidth" min="20" max="150" step="5" value="80"/>
+  <div class="controls">
+    <div class="control-group">
+      <label>Shape:
+        <select id="shapeSelect">
+          <option value="rectangle">Rectangle</option>
+          <option value="square">Square</option>
+          <option value="circle">Circle</option>
+        </select>
+      </label>
+    </div>
+    <div class="control-group">
+      <label>Wood Type:
+        <select id="woodSelect">
+          <option value="oak">Oak</option>
+          <option value="walnut">Walnut</option>
+          <option value="cherry">Cherry</option>
+          <option value="maple">Maple</option>
+        </select>
+      </label>
+    </div>
+    <div class="control-group">
+      <label>River Width:
+        <input type="range" id="riverWidth" min="20" max="200" value="80">
+      </label>
+    </div>
+    <div class="control-group">
+      <label>Epoxy Color:
+        <input type="color" id="epoxyColor" value="#1ca3ec">
+      </label>
+    </div>
+    <div class="control-group">
+      <label>Epoxy Opacity:
+        <input type="range" id="epoxyOpacity" min="0" max="1" step="0.05" value="0.7">
+      </label>
     </div>
   </div>
 
+  <canvas id="builderCanvas" width="800" height="600"></canvas>
+
   <script>
-    const canvas = document.getElementById("tableCanvas");
+    const canvas = document.getElementById("builderCanvas");
     const ctx = canvas.getContext("2d");
 
     const shapeSelect = document.getElementById("shapeSelect");
     const woodSelect = document.getElementById("woodSelect");
-    const epoxyColor = document.getElementById("epoxyColor");
-    const epoxyOpacity = document.getElementById("epoxyOpacity");
-    const riverWidth = document.getElementById("riverWidth");
+    const riverWidthSlider = document.getElementById("riverWidth");
+    const epoxyColorPicker = document.getElementById("epoxyColor");
+    const epoxyOpacitySlider = document.getElementById("epoxyOpacity");
 
-    // preload wood textures
     const woodTextures = {
-      oak: "images/wood/oak.jpg",
-      walnut: "images/wood/walnut.jpg",
-      cherry: "images/wood/cherry.jpg",
-      maple: "images/wood/maple.jpg",
+      oak: "/images/wood/oak.jpg",
+      walnut: "/images/wood/walnut.jpg",
+      cherry: "/images/wood/cherry.jpg",
+      maple: "/images/wood/maple.jpg"
     };
-    const textureImgs = {};
-    for (let key in woodTextures) {
+
+    const woodImages = {};
+    let loaded = 0;
+    Object.entries(woodTextures).forEach(([key, src]) => {
       const img = new Image();
-      img.src = woodTextures[key];
-      textureImgs[key] = img;
-    }
-
-    function drawTable() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      const shape = shapeSelect.value;
-      const wood = woodSelect.value;
-      const color = epoxyColor.value;
-      const opacity = parseFloat(epoxyOpacity.value);
-      const width = parseInt(riverWidth.value);
-
-      ctx.save();
-
-      // Draw wood shape with texture
-      const woodImg = textureImgs[wood];
-      if (woodImg.complete) {
-        const pattern = ctx.createPattern(woodImg, "repeat");
-        ctx.fillStyle = pattern;
-      } else {
-        ctx.fillStyle = "#663300";
-      }
-
-      ctx.beginPath();
-      if (shape === "rectangle") {
-        ctx.rect(50, 50, 500, 300);
-      } else if (shape === "square") {
-        ctx.rect(150, 50, 300, 300);
-      } else if (shape === "circle") {
-        ctx.arc(300, 200, 150, 0, Math.PI * 2);
-      }
-      ctx.closePath();
-      ctx.fill();
-      ctx.clip();
-
-      // Draw epoxy river overlay
-      ctx.globalAlpha = opacity;
-      ctx.fillStyle = color;
-      ctx.beginPath();
-
-      if (shape === "rectangle") {
-        generateRiverPath(50, 200, 500, width); 
-      } else if (shape === "square") {
-        generateRiverPath(150, 200, 300, width); 
-      } else if (shape === "circle") {
-        generateCurvedRiverPath(300, 200, 150, width); 
-      }
-
-      ctx.fill();
-      ctx.globalAlpha = 1;
-      ctx.restore();
-    }
+      img.src = src;
+      img.onload = () => {
+        woodImages[key] = img;
+        loaded++;
+        if (loaded === Object.keys(woodTextures).length) draw();
+      };
+    });
 
     function generateRiverPath(x, y, length, riverW) {
-      ctx.moveTo(x, y - riverW / 2);
       const step = 30;
+      let offsets = [];
       let offset = 0;
       for (let i = 0; i <= length; i += step) {
-        offset += (Math.random() - 0.5) * 20; 
-        offset = Math.max(Math.min(offset, 40), -40);
-        ctx.lineTo(x + i, y - riverW / 2 + offset);
-      }
-      for (let i = length; i >= 0; i -= step) {
         offset += (Math.random() - 0.5) * 20;
         offset = Math.max(Math.min(offset, 40), -40);
-        ctx.lineTo(x + i, y + riverW / 2 + offset);
+        offsets.push(offset);
+      }
+
+      ctx.moveTo(x, y - riverW / 2 + offsets[0]);
+      for (let i = 0; i < offsets.length; i++) {
+        ctx.lineTo(x + i * step, y - riverW / 2 + offsets[i]);
+      }
+      for (let i = offsets.length - 1; i >= 0; i--) {
+        ctx.lineTo(x + i * step, y + riverW / 2 + offsets[i]);
       }
       ctx.closePath();
     }
 
     function generateCurvedRiverPath(cx, cy, radius, riverW) {
       const step = Math.PI / 40;
+      let offsets = [];
       let offset = 0;
-
-      ctx.moveTo(cx - radius, cy - riverW / 2);
-
-      // Top edge of river
-      for (let angle = Math.PI; angle >= 0; angle -= step) {
+      for (let angle = -Math.PI/2; angle <= Math.PI/2; angle += step) {
         offset += (Math.random() - 0.5) * 15;
         offset = Math.max(Math.min(offset, 30), -30);
-        ctx.lineTo(cx + Math.cos(angle) * radius,
-                   cy + Math.sin(angle) * radius - riverW / 2 + offset);
+        offsets.push(offset);
       }
-      // Bottom edge of river
-      for (let angle = 0; angle <= Math.PI; angle += step) {
-        offset += (Math.random() - 0.5) * 15;
-        offset = Math.max(Math.min(offset, 30), -30);
-        ctx.lineTo(cx + Math.cos(angle) * radius,
-                   cy + Math.sin(angle) * radius + riverW / 2 + offset);
+
+      ctx.moveTo(cx - radius, cy - riverW / 2 + offsets[0]);
+      let i = 0;
+      for (let angle = -Math.PI/2; angle <= Math.PI/2; angle += step) {
+        ctx.lineTo(cx + Math.cos(angle) * radius, cy + Math.sin(angle) * radius - riverW/2 + offsets[i]);
+        i++;
+      }
+      i = offsets.length - 1;
+      for (let angle = Math.PI/2; angle >= -Math.PI/2; angle -= step) {
+        ctx.lineTo(cx + Math.cos(angle) * radius, cy + Math.sin(angle) * radius + riverW/2 + offsets[i]);
+        i--;
       }
       ctx.closePath();
     }
 
-    shapeSelect.addEventListener("change", drawTable);
-    woodSelect.addEventListener("change", drawTable);
-    epoxyColor.addEventListener("input", drawTable);
-    epoxyOpacity.addEventListener("input", drawTable);
-    riverWidth.addEventListener("input", drawTable);
+    function draw() {
+      const shape = shapeSelect.value;
+      const wood = woodSelect.value;
+      const riverW = parseInt(riverWidthSlider.value);
+      const epoxyColor = epoxyColorPicker.value;
+      const epoxyOpacity = parseFloat(epoxyOpacitySlider.value);
 
-    window.onload = () => {
-      drawTable();
-    };
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw wood background
+      if (woodImages[wood]) {
+        const pattern = ctx.createPattern(woodImages[wood], "repeat");
+        ctx.fillStyle = pattern;
+      } else {
+        ctx.fillStyle = "#8B5A2B";
+      }
+
+      ctx.beginPath();
+      if (shape === "rectangle") {
+        ctx.rect(100, 100, 600, 400);
+      } else if (shape === "square") {
+        ctx.rect(200, 100, 400, 400);
+      } else if (shape === "circle") {
+        ctx.arc(400, 300, 250, 0, Math.PI * 2);
+      }
+      ctx.fill();
+
+      // Draw river
+      ctx.beginPath();
+      if (shape === "rectangle") {
+        generateRiverPath(100, 300, 600, riverW);
+      } else if (shape === "square") {
+        generateRiverPath(200, 300, 400, riverW);
+      } else if (shape === "circle") {
+        generateCurvedRiverPath(400, 300, 250, riverW);
+      }
+      ctx.fillStyle = hexToRgba(epoxyColor, epoxyOpacity);
+      ctx.fill();
+    }
+
+    function hexToRgba(hex, opacity) {
+      const bigint = parseInt(hex.slice(1), 16);
+      const r = (bigint >> 16) & 255;
+      const g = (bigint >> 8) & 255;
+      const b = bigint & 255;
+      return `rgba(${r},${g},${b},${opacity})`;
+    }
+
+    shapeSelect.addEventListener("change", draw);
+    woodSelect.addEventListener("change", draw);
+    riverWidthSlider.addEventListener("input", draw);
+    epoxyColorPicker.addEventListener("input", draw);
+    epoxyOpacitySlider.addEventListener("input", draw);
+
   </script>
 </body>
 </html>
