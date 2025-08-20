@@ -1,134 +1,205 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Epoxy Table Builder</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>River Table Builder</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f4f4f9;
-      color: #333;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-    }
-
-    nav {
-      background: #222;
-      padding: 1em;
-      display: flex;
-      justify-content: center;
-      gap: 2em;
-    }
-
-    nav a {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      display: flex; flex-direction: column;
+      align-items: center;
+      background: #1e1e1e; /* modern dark theme */
       color: white;
-      text-decoration: none;
+    }
+    header {
+      background: #111;
+      width: 100%;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.2rem;
       font-weight: bold;
-      transition: color 0.3s;
+      border-bottom: 2px solid #444;
     }
-
-    nav a:hover {
-      color: #1E90FF;
-    }
-
-    h1 {
-      margin-top: 20px;
-    }
-
-    #builderCanvas {
-      margin-top: 20px;
-      border: 2px solid #333;
-      background: #fff;
-      width: 600px;
-      height: 400px;
-    }
-
-    .controls {
-      margin-top: 20px;
+    #controls {
+      margin: 1rem;
       display: flex;
-      justify-content: center;
       flex-wrap: wrap;
-      gap: 1em;
+      gap: 1rem;
+      justify-content: center;
+      background: #2a2a2a;
+      padding: 1rem;
+      border-radius: 10px;
     }
-
-    .control-group {
+    label {
       display: flex;
       flex-direction: column;
-      align-items: center;
+      font-size: 0.9rem;
     }
-
-    button {
-      padding: 10px 20px;
-      font-size: 1em;
-      border: none;
+    input, select, button {
+      margin-top: 0.3rem;
+      padding: 0.3rem;
       border-radius: 5px;
-      background: #1E90FF;
+      border: none;
+    }
+    #builderCanvas {
+      border: 2px solid #444;
+      margin: 1rem;
+      border-radius: 10px;
+      background: #666;
+    }
+    button {
+      background: #2196f3;
       color: white;
       cursor: pointer;
-      transition: background 0.3s;
+      font-weight: bold;
     }
-
     button:hover {
-      background: #155FA0;
+      background: #1976d2;
     }
   </style>
 </head>
 <body>
-  <!-- Navigation -->
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="gallery.html">Gallery</a>
-    <a href="builder.html">Builder</a>
-    <a href="about.html">About</a>
-    <a href="contact.html">Contact</a>
-  </nav>
+  <header>River Table Builder</header>
 
-  <h1>Epoxy Table Builder</h1>
-  <canvas id="builderCanvas" width="600" height="400"></canvas>
-
-  <div class="controls">
-    <div class="control-group">
-      <label for="woodType">Wood Type</label>
+  <div id="controls">
+    <label>Epoxy Color
+      <input type="color" id="epoxyColor" value="#2196f3"/>
+    </label>
+    <label>Opacity
+      <input type="range" id="opacity" min="0" max="1" step="0.05" value="0.6"/>
+    </label>
+    <label>Wood Type
       <select id="woodType">
         <option value="oak">Oak</option>
-        <option value="walnut">Walnut</option>
         <option value="cherry">Cherry</option>
+        <option value="walnut">Walnut</option>
+        <option value="maple">Maple</option>
       </select>
-    </div>
-
-    <div class="control-group">
-      <label for="epoxyColor">Epoxy Color</label>
-      <input type="color" id="epoxyColor" value="#1E90FF">
-    </div>
-
-    <div class="control-group">
-      <label for="opacity">Epoxy Opacity</label>
-      <input type="range" id="opacity" min="0.1" max="1" step="0.1" value="0.7">
-    </div>
-
-    <div class="control-group">
-      <label for="shape">Epoxy Shape</label>
-      <select id="shape">
+    </label>
+    <label>Shape
+      <select id="shapeSelect">
         <option value="river">River</option>
-        <option value="square">Square</option>
+        <option value="rectangle">Rectangle</option>
         <option value="circle">Circle</option>
       </select>
-    </div>
-
-    <div class="control-group">
-      <label for="width">Epoxy Width</label>
-      <input type="range" id="width" min="0.1" max="1" step="0.1" value="0.5">
-    </div>
-
-    <div class="control-group">
-      <button id="randomize">Randomize</button>
-    </div>
+    </label>
+    <label>River Width
+      <input type="range" id="width" min="20" max="200" value="100"/>
+    </label>
+    <button id="randomize">Randomize</button>
   </div>
 
-  <!-- ✅ Important: load script AFTER page is ready -->
-  <script src="builder.js" defer></script>
+  <canvas id="builderCanvas" width="600" height="400"></canvas>
+
+  <script>
+    const canvas = document.getElementById("builderCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const epoxyColorInput = document.getElementById("epoxyColor");
+    const opacityInput = document.getElementById("opacity");
+    const woodTypeInput = document.getElementById("woodType");
+    const shapeSelect = document.getElementById("shapeSelect");
+    const widthInput = document.getElementById("width");
+    const randomizeBtn = document.getElementById("randomize");
+
+    let epoxyColor = epoxyColorInput.value;
+    let epoxyOpacity = parseFloat(opacityInput.value);
+    let woodType = woodTypeInput.value;
+    let shapeType = shapeSelect.value;
+    let riverWidth = parseInt(widthInput.value);
+
+    const woodTextures = {
+      oak: new Image(),
+      cherry: new Image(),
+      walnut: new Image(),
+      maple: new Image(),
+    };
+    woodTextures.oak.src = "/images/wood/oak.jpg";
+    woodTextures.cherry.src = "/images/wood/cherry.jpg";
+    woodTextures.walnut.src = "/images/wood/walnut.jpg";
+    woodTextures.maple.src = "/images/wood/maple.jpg";
+
+    function drawTable() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const texture = woodTextures[woodType];
+      if (texture.complete && texture.naturalWidth > 0) {
+        const pattern = ctx.createPattern(texture, "repeat");
+        ctx.fillStyle = pattern;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      } else {
+        ctx.fillStyle = "#8b5a2b"; // fallback wood color
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+
+      ctx.globalAlpha = epoxyOpacity;
+      ctx.fillStyle = epoxyColor;
+
+      if (shapeType === "river") {
+        drawRiver();
+      } else if (shapeType === "rectangle") {
+        ctx.fillRect(canvas.width / 2 - riverWidth / 2, 0, riverWidth, canvas.height);
+      } else if (shapeType === "circle") {
+        ctx.beginPath();
+        ctx.ellipse(canvas.width / 2, canvas.height / 2, riverWidth / 2, canvas.height / 3, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1.0;
+    }
+
+    function drawRiver() {
+      ctx.beginPath();
+      const midX = canvas.width / 2;
+      ctx.moveTo(midX, 0);
+
+      for (let y = 0; y <= canvas.height; y += 10) {
+        const taper = 0.3 + 0.7 * (1 - Math.abs(y - canvas.height/2) / (canvas.height/2));
+        const offset = (Math.sin(y/50) + Math.cos(y/80)) * (riverWidth/4) * taper;
+        ctx.lineTo(midX + offset, y);
+      }
+
+      for (let y = canvas.height; y >= 0; y -= 10) {
+        const taper = 0.3 + 0.7 * (1 - Math.abs(y - canvas.height/2) / (canvas.height/2));
+        const offset = (Math.sin(y/50 + 2) + Math.cos(y/80 + 2)) * (riverWidth/4) * taper;
+        ctx.lineTo(midX - offset, y);
+      }
+
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    epoxyColorInput.addEventListener("input", () => { epoxyColor = epoxyColorInput.value; drawTable(); });
+    opacityInput.addEventListener("input", () => { epoxyOpacity = parseFloat(opacityInput.value); drawTable(); });
+    woodTypeInput.addEventListener("change", () => { woodType = woodTypeInput.value; drawTable(); });
+    shapeSelect.addEventListener("change", () => { shapeType = shapeSelect.value; drawTable(); });
+    widthInput.addEventListener("input", () => { riverWidth = parseInt(widthInput.value); drawTable(); });
+
+    randomizeBtn.addEventListener("click", () => {
+      const colors = ["#2196f3", "#4caf50", "#9c27b0", "#ff5722", "#00bcd4"];
+      epoxyColor = colors[Math.floor(Math.random() * colors.length)];
+      epoxyColorInput.value = epoxyColor;
+
+      epoxyOpacity = Math.random();
+      opacityInput.value = epoxyOpacity;
+
+      riverWidth = Math.floor(Math.random() * 150) + 30;
+      widthInput.value = riverWidth;
+
+      const woods = ["oak", "cherry", "walnut", "maple"];
+      woodType = woods[Math.floor(Math.random() * woods.length)];
+      woodTypeInput.value = woodType;
+
+      const shapes = ["river", "rectangle", "circle"];
+      shapeType = shapes[Math.floor(Math.random() * shapes.length)];
+      shapeSelect.value = shapeType;
+
+      drawTable();
+    });
+
+    Object.values(woodTextures).forEach(img => { img.onload = drawTable; });
+    drawTable();
+  </script>
 </body>
 </html>
