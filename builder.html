@@ -3,146 +3,146 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Epoxy Builder</title>
+  <title>Table Builder</title>
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #1e1e1e;
-      color: #fff;
-      text-align: center;
+      background: #1e1e1e;
+      color: #f5f5f5;
     }
     nav {
       background: #111;
       padding: 1rem;
       display: flex;
-      justify-content: center;
-      gap: 2rem;
+      gap: 1rem;
     }
     nav a {
-      color: #fff;
+      color: #f5f5f5;
       text-decoration: none;
       font-weight: bold;
     }
     nav a:hover {
       text-decoration: underline;
     }
+    .builder-container {
+      display: flex;
+      padding: 20px;
+    }
     canvas {
       border: 2px solid #444;
-      margin: 1rem auto;
-      display: block;
-      background-color: #ccc;
+      background: #333;
+      border-radius: 8px;
+      margin-right: 20px;
     }
     .controls {
-      margin: 1rem auto;
-      max-width: 600px;
-      text-align: left;
-    }
-    .control-group {
-      margin-bottom: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 300px;
     }
     label {
-      display: block;
-      margin-bottom: 0.5rem;
-    }
-    input, select, button {
-      width: 100%;
-      padding: 0.5rem;
-      border-radius: 5px;
-      border: none;
-      margin-bottom: 0.5rem;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
-  <!-- Navigation -->
   <nav>
     <a href="index.html">Home</a>
     <a href="gallery.html">Gallery</a>
     <a href="builder.html">Builder</a>
+    <a href="shop.html">Shop</a>
     <a href="about.html">About</a>
     <a href="contact.html">Contact</a>
   </nav>
 
-  <h1>Epoxy Table Builder</h1>
-  <canvas id="builderCanvas" width="600" height="400"></canvas>
+  <div class="builder-container">
+    <canvas id="tableCanvas" width="600" height="400"></canvas>
 
-  <div class="controls">
-    <div class="control-group">
-      <label for="shapeSelect">Table Shape:</label>
-      <select id="shapeSelect">
-        <option value="rectangle">Rectangle</option>
-        <option value="square">Square</option>
-        <option value="circle">Circle</option>
-      </select>
+    <div class="controls">
+      <label>
+        Wood Type:
+        <select id="woodType">
+          <option value="oak">Oak</option>
+          <option value="walnut">Walnut</option>
+          <option value="cherry">Cherry</option>
+        </select>
+      </label>
+
+      <label>
+        Table Shape:
+        <select id="tableShape">
+          <option value="rectangle">Rectangle</option>
+          <option value="square">Square</option>
+          <option value="circle">Circle</option>
+        </select>
+      </label>
+
+      <label>
+        River Color:
+        <input type="color" id="epoxyColor" value="#00bfff">
+      </label>
+
+      <label>
+        River Opacity:
+        <input type="range" id="epoxyOpacity" min="0" max="1" step="0.05" value="0.6">
+      </label>
+
+      <label>
+        River Width:
+        <input type="range" id="riverWidth" min="20" max="200" value="100">
+      </label>
     </div>
-
-    <div class="control-group">
-      <label for="woodSelect">Wood Type:</label>
-      <select id="woodSelect">
-        <option value="oak">Oak</option>
-        <option value="cherry">Cherry</option>
-        <option value="walnut">Walnut</option>
-        <option value="maple">Maple</option>
-      </select>
-    </div>
-
-    <div class="control-group">
-      <label for="colorPicker">Epoxy Color:</label>
-      <input type="color" id="colorPicker" value="#00aaff">
-    </div>
-
-    <div class="control-group">
-      <label for="opacityRange">Epoxy Opacity:</label>
-      <input type="range" id="opacityRange" min="0" max="1" step="0.05" value="0.7">
-    </div>
-
-    <div class="control-group">
-      <label for="widthRange">River Width:</label>
-      <input type="range" id="widthRange" min="20" max="200" step="5" value="100">
-    </div>
-
-    <button id="randomizeBtn">Randomize</button>
   </div>
 
   <script>
-    const canvas = document.getElementById("builderCanvas");
+    const canvas = document.getElementById("tableCanvas");
     const ctx = canvas.getContext("2d");
 
-    const shapeSelect = document.getElementById("shapeSelect");
-    const woodSelect = document.getElementById("woodSelect");
-    const colorPicker = document.getElementById("colorPicker");
-    const opacityRange = document.getElementById("opacityRange");
-    const widthRange = document.getElementById("widthRange");
-    const randomizeBtn = document.getElementById("randomizeBtn");
+    const woodTextures = {
+      oak: new Image(),
+      walnut: new Image(),
+      cherry: new Image(),
+    };
+    woodTextures.oak.src = "/images/wood/oak.jpg";
+    woodTextures.walnut.src = "/images/wood/walnut.jpg";
+    woodTextures.cherry.src = "/images/wood/cherry.jpg";
 
-    let tableShape = "rectangle";
     let woodType = "oak";
-    let epoxyColor = "#00aaff";
-    let epoxyOpacity = 0.7;
+    let tableShape = "rectangle";
+    let epoxyColor = "#00bfff";
+    let epoxyOpacity = 0.6;
     let riverWidth = 100;
 
-    const woodTextures = {};
-    const woodOptions = ["oak", "cherry", "walnut", "maple"];
-    let loadedTextures = 0;
+    document.getElementById("woodType").addEventListener("change", e => {
+      woodType = e.target.value;
+      drawTable();
+    });
 
-    // Preload textures
-    woodOptions.forEach(wood => {
-      const img = new Image();
-      img.src = `images/wood/${wood}.jpg`;
-      img.onload = () => {
-        woodTextures[wood] = img;
-        loadedTextures++;
-        if (loadedTextures === woodOptions.length) {
-          drawTable();
-        }
-      };
+    document.getElementById("tableShape").addEventListener("change", e => {
+      tableShape = e.target.value;
+      drawTable();
+    });
+
+    document.getElementById("epoxyColor").addEventListener("input", e => {
+      epoxyColor = e.target.value;
+      drawTable();
+    });
+
+    document.getElementById("epoxyOpacity").addEventListener("input", e => {
+      epoxyOpacity = parseFloat(e.target.value);
+      drawTable();
+    });
+
+    document.getElementById("riverWidth").addEventListener("input", e => {
+      riverWidth = parseInt(e.target.value);
+      drawTable();
     });
 
     function drawTable() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Draw table base
+      // --- Wood base ---
       ctx.save();
       if (tableShape === "rectangle") {
         ctx.drawImage(woodTextures[woodType], 0, 0, canvas.width, canvas.height);
@@ -157,16 +157,38 @@
         ctx.arc(canvas.width/2, canvas.height/2, radius, 0, Math.PI*2);
         ctx.closePath();
         ctx.clip();
-        ctx.drawImage(woodTextures[woodType], canvas.width/2 - radius, canvas.height/2 - radius, radius*2, radius*2);
+        ctx.drawImage(
+          woodTextures[woodType],
+          canvas.width/2 - radius,
+          canvas.height/2 - radius,
+          radius*2,
+          radius*2
+        );
       }
       ctx.restore();
 
-      // Draw epoxy river
+      // --- Clip epoxy to shape ---
       ctx.save();
+      if (tableShape === "rectangle") {
+        ctx.rect(0, 0, canvas.width, canvas.height);
+      } else if (tableShape === "square") {
+        const size = Math.min(canvas.width, canvas.height) * 0.8;
+        const x = (canvas.width - size) / 2;
+        const y = (canvas.height - size) / 2;
+        ctx.rect(x, y, size, size);
+      } else if (tableShape === "circle") {
+        const radius = Math.min(canvas.width, canvas.height) * 0.4;
+        ctx.beginPath();
+        ctx.arc(canvas.width/2, canvas.height/2, radius, 0, Math.PI*2);
+        ctx.closePath();
+      }
+      ctx.clip();
+
+      // --- Epoxy river ---
       ctx.globalAlpha = epoxyOpacity;
       ctx.fillStyle = epoxyColor;
 
-      const minRiver = riverWidth * 0.3; // never go below 30%
+      const minRiver = riverWidth * 0.3;
       const points = [];
       for (let y = 0; y <= canvas.height; y += 10) {
         const variation = Math.sin(y * 0.02) * 20;
@@ -186,44 +208,9 @@
       ctx.restore();
     }
 
-    // Controls
-    shapeSelect.addEventListener("change", e => {
-      tableShape = e.target.value;
-      drawTable();
-    });
-
-    woodSelect.addEventListener("change", e => {
-      woodType = e.target.value;
-      drawTable();
-    });
-
-    colorPicker.addEventListener("input", e => {
-      epoxyColor = e.target.value;
-      drawTable();
-    });
-
-    opacityRange.addEventListener("input", e => {
-      epoxyOpacity = parseFloat(e.target.value);
-      drawTable();
-    });
-
-    widthRange.addEventListener("input", e => {
-      riverWidth = parseInt(e.target.value);
-      drawTable();
-    });
-
-    randomizeBtn.addEventListener("click", () => {
-      woodType = woodOptions[Math.floor(Math.random() * woodOptions.length)];
-      epoxyColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
-      epoxyOpacity = Math.random();
-      riverWidth = 50 + Math.random() * 150;
-
-      woodSelect.value = woodType;
-      colorPicker.value = epoxyColor;
-      opacityRange.value = epoxyOpacity.toFixed(2);
-      widthRange.value = riverWidth;
-
-      drawTable();
+    // Wait for textures to load
+    Object.values(woodTextures).forEach(img => {
+      img.onload = () => drawTable();
     });
   </script>
 </body>
