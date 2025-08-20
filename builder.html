@@ -146,26 +146,22 @@
       ctx.closePath();
     }
 
-    function generateCurvedRiverPath(cx, cy, radius, riverW) {
-      const step = Math.PI / 40;
+    function generateStraightRiverCut(cx, cy, width, riverW) {
+      const step = 30;
       let offsets = [];
       let offset = 0;
-      for (let angle = -Math.PI/2; angle <= Math.PI/2; angle += step) {
-        offset += (Math.random() - 0.5) * 15;
-        offset = Math.max(Math.min(offset, 30), -30);
+      for (let i = 0; i <= width; i += step) {
+        offset += (Math.random() - 0.5) * 20;
+        offset = Math.max(Math.min(offset, 40), -40);
         offsets.push(offset);
       }
 
-      ctx.moveTo(cx - radius, cy - riverW / 2 + offsets[0]);
-      let i = 0;
-      for (let angle = -Math.PI/2; angle <= Math.PI/2; angle += step) {
-        ctx.lineTo(cx + Math.cos(angle) * radius, cy + Math.sin(angle) * radius - riverW/2 + offsets[i]);
-        i++;
+      ctx.moveTo(cx - width/2, cy - riverW / 2 + offsets[0]);
+      for (let i = 0; i < offsets.length; i++) {
+        ctx.lineTo(cx - width/2 + i * step, cy - riverW / 2 + offsets[i]);
       }
-      i = offsets.length - 1;
-      for (let angle = Math.PI/2; angle >= -Math.PI/2; angle -= step) {
-        ctx.lineTo(cx + Math.cos(angle) * radius, cy + Math.sin(angle) * radius + riverW/2 + offsets[i]);
-        i--;
+      for (let i = offsets.length - 1; i >= 0; i--) {
+        ctx.lineTo(cx - width/2 + i * step, cy + riverW / 2 + offsets[i]);
       }
       ctx.closePath();
     }
@@ -202,9 +198,9 @@
       if (shape === "rectangle") {
         generateRiverPath(100, 300, 600, riverW);
       } else if (shape === "square") {
-        generateRiverPath(200, 300, 400, riverW);
+        generateRiverPath(200, 300, 400, riverW + 10); // extend to make sure it reaches edges
       } else if (shape === "circle") {
-        generateCurvedRiverPath(400, 300, 250, riverW);
+        generateStraightRiverCut(400, 300, 500, riverW); // cut through circle, not wrap
       }
       ctx.fillStyle = hexToRgba(epoxyColor, epoxyOpacity);
       ctx.fill();
