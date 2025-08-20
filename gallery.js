@@ -1,35 +1,13 @@
-// Gallery items (update src paths to match your repo structure exactly)
-const galleryItems = [
-  {
-    type: "image",
-    src: "./images/tables/Olivetable.jpg", // ✅ corrected path
-    title: "Olive Wood Coffee Table"
-  },
-  {
-    type: "image",
-    src: "https://i.imgur.com/2cOaZsJ.jpg",
-    title: "Walnut Live Edge"
-  },
-  {
-    type: "video",
-    src: "./images/tables/Olivetablevid.mp4", // ✅ corrected path
-    title: "Olive Coffee Table (Video)"
-  },
-  {
-    type: "image",
-    src: "https://i.imgur.com/6kphbP3.jpg",
-    title: "Cherry Slab with Blue Epoxy"
-  }
-];
-
 const galleryGrid = document.getElementById("galleryGrid");
 
-if (!galleryGrid) {
-  console.error("Gallery container #galleryGrid not found in HTML.");
-} else {
-  if (galleryItems.length === 0) {
-    galleryGrid.innerHTML = "<p>No gallery items found.</p>";
-  } else {
+fetch("gallery.json")
+  .then(res => res.json())
+  .then(galleryItems => {
+    if (!galleryItems.length) {
+      galleryGrid.innerHTML = "<p>No gallery items found.</p>";
+      return;
+    }
+
     galleryItems.forEach(item => {
       const card = document.createElement("div");
       card.classList.add("gallery-card");
@@ -44,7 +22,7 @@ if (!galleryGrid) {
         const vid = document.createElement("video");
         vid.src = item.src;
         vid.controls = true;
-        vid.width = 300; // keeps video a consistent size
+        vid.width = 320;
         card.appendChild(vid);
       }
 
@@ -54,5 +32,8 @@ if (!galleryGrid) {
 
       galleryGrid.appendChild(card);
     });
-  }
-}
+  })
+  .catch(err => {
+    console.error("Error loading gallery.json:", err);
+    galleryGrid.innerHTML = "<p>Could not load gallery.</p>";
+  });
