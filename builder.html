@@ -51,10 +51,10 @@
   <header>
     <h1>River Table Builder</h1>
     <nav>
-      <a href="index.html">Home</a>
-      <a href="gallery.html">Gallery</a>
-      <a href="builder.html">Builder</a>
-      <a href="contact.html">Contact</a>
+      <a href="#">Home</a>
+      <a href="#">Gallery</a>
+      <a href="#">Builder</a>
+      <a href="#">Contact</a>
     </nav>
   </header>
 
@@ -156,13 +156,18 @@
         offsets.push(offset);
       }
 
-      ctx.moveTo(cx - width/2, cy - riverW / 2 + offsets[0]);
+      // extend slightly beyond to ensure touching edges
+      ctx.moveTo(cx - width/2 - 10, cy - riverW / 2 + offsets[0]);
       for (let i = 0; i < offsets.length; i++) {
         ctx.lineTo(cx - width/2 + i * step, cy - riverW / 2 + offsets[i]);
       }
+      ctx.lineTo(cx + width/2 + 10, cy - riverW / 2 + offsets[offsets.length - 1]);
+
       for (let i = offsets.length - 1; i >= 0; i--) {
         ctx.lineTo(cx - width/2 + i * step, cy + riverW / 2 + offsets[i]);
       }
+      ctx.lineTo(cx - width/2 - 10, cy + riverW / 2 + offsets[0]);
+
       ctx.closePath();
     }
 
@@ -193,17 +198,31 @@
       }
       ctx.fill();
 
+      // Clip river to wood boundary
+      ctx.save();
+      ctx.beginPath();
+      if (shape === "rectangle") {
+        ctx.rect(100, 100, 600, 400);
+      } else if (shape === "square") {
+        ctx.rect(200, 100, 400, 400);
+      } else if (shape === "circle") {
+        ctx.arc(400, 300, 250, 0, Math.PI * 2);
+      }
+      ctx.clip();
+
       // Draw river
       ctx.beginPath();
       if (shape === "rectangle") {
         generateRiverPath(100, 300, 600, riverW);
       } else if (shape === "square") {
-        generateRiverPath(200, 300, 400, riverW + 10); // extend to make sure it reaches edges
+        generateStraightRiverCut(400, 300, 400, riverW);
       } else if (shape === "circle") {
-        generateStraightRiverCut(400, 300, 500, riverW); // cut through circle, not wrap
+        generateStraightRiverCut(400, 300, 500, riverW);
       }
       ctx.fillStyle = hexToRgba(epoxyColor, epoxyOpacity);
       ctx.fill();
+
+      ctx.restore();
     }
 
     function hexToRgba(hex, opacity) {
