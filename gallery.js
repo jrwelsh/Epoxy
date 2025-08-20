@@ -3,7 +3,7 @@ const galleryItems = [
   {
     type: "image",
     src: "/images/table/Olivetable.jpg",
-    title: "Oak River Table"
+    title: "Olive Wood Coffee Table"
   },
   {
     type: "image",
