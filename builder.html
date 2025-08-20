@@ -139,7 +139,7 @@
       if (shape === "rectangle") {
         ctx.rect(50, 50, 500, 300);
       } else if (shape === "square") {
-        ctx.rect(100, 50, 300, 300);
+        ctx.rect(150, 50, 300, 300);
       } else if (shape === "circle") {
         ctx.arc(300, 200, 150, 0, Math.PI * 2);
       }
@@ -153,11 +153,11 @@
       ctx.beginPath();
 
       if (shape === "rectangle") {
-        generateRiverPath(50, 350, 500, width);
+        generateRiverPath(50, 200, 500, width); // centered vertically
       } else if (shape === "square") {
-        generateRiverPath(100, 350, 300, width);
+        generateRiverPath(150, 200, 300, width); // centered vertically
       } else if (shape === "circle") {
-        ctx.arc(300, 200, Math.max(30, width / 2), 0, Math.PI * 2);
+        generateCurvedRiverPath(300, 200, 150, width);
       }
 
       ctx.fill();
@@ -175,6 +175,23 @@
       for (let i = width; i >= 0; i -= step) {
         const offset = Math.sin(i / 50) * 30;
         ctx.lineTo(x + i, y + riverW / 2 + offset);
+      }
+      ctx.closePath();
+    }
+
+    function generateCurvedRiverPath(cx, cy, radius, riverW) {
+      const step = Math.PI / 30; // curve detail
+      ctx.moveTo(cx - radius, cy - riverW / 2);
+
+      for (let angle = Math.PI; angle >= 0; angle -= step) {
+        const offset = Math.sin(angle * 3) * 20;
+        ctx.lineTo(cx + Math.cos(angle) * radius,
+                   cy + Math.sin(angle) * radius - riverW / 2 + offset);
+      }
+      for (let angle = 0; angle <= Math.PI; angle += step) {
+        const offset = Math.sin(angle * 3) * 20;
+        ctx.lineTo(cx + Math.cos(angle) * radius,
+                   cy + Math.sin(angle) * radius + riverW / 2 + offset);
       }
       ctx.closePath();
     }
