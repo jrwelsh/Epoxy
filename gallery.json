@@ -1,0 +1,22 @@
+[
+  {
+    "type": "image",
+    "src": "/images/tables/Olivetable.jpg",
+    "title": "Olive Wood Coffee Table"
+  },
+  {
+    "type": "video",
+    "src": "/images/tables/Olivetablevid.mp4",
+    "title": "Olive Table Build Video"
+  },
+  {
+    "type": "image",
+    "src": "/images/tables/WalnutTable.jpg",
+    "title": "Walnut Live Edge Table"
+  },
+  {
+    "type": "image",
+    "src": "/images/tables/CherryTable.jpg",
+    "title": "Cherry Slab with Blue Epoxy"
+  }
+]
