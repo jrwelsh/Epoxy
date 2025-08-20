@@ -2,7 +2,7 @@
 const galleryItems = [
   {
     type: "image",
-    src: "https://i.imgur.com/E3T4z6h.jpg",
+    src: "/images/table/Olivetable.jpg",
     title: "Oak River Table"
   },
   {
