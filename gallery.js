@@ -2,7 +2,7 @@
 const galleryItems = [
   {
     type: "image",
-    src: "/images/table/Olivetable.jpg",
+    src: "images/table/Olivetable.jpg",
     title: "Olive Wood Coffee Table"
   },
   {
@@ -12,7 +12,7 @@ const galleryItems = [
   },
   {
     type: "video",
-    src: "/images/table/Olivetablevid.mp4",
+    src: "images/table/Olivetablevid.mp4",
     title: "Olive Coffee Table"
   },
   {
