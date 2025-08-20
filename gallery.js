@@ -1,8 +1,8 @@
-// Gallery items (update src paths to your actual files)
+// Gallery items (update src paths to match your repo structure exactly)
 const galleryItems = [
   {
     type: "image",
-    src: "images/tables/Olivetable.jpg",
+    src: "./images/tables/Olivetable.jpg", // ✅ corrected path
     title: "Olive Wood Coffee Table"
   },
   {
@@ -12,7 +12,7 @@ const galleryItems = [
   },
   {
     type: "video",
-    src: "images/tables/Olivetablevid.mp4",
+    src: "./images/tables/Olivetablevid.mp4", // ✅ corrected path
     title: "Olive Coffee Table (Video)"
   },
   {
@@ -44,7 +44,7 @@ if (!galleryGrid) {
         const vid = document.createElement("video");
         vid.src = item.src;
         vid.controls = true;
-        vid.width = 300; // keep consistent size
+        vid.width = 300; // keeps video a consistent size
         card.appendChild(vid);
       }
 
