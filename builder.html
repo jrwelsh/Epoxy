@@ -153,11 +153,11 @@
       ctx.beginPath();
 
       if (shape === "rectangle") {
-        generateRiverPath(50, 200, 500, width); // centered vertically
+        generateRiverPath(50, 200, 500, width); 
       } else if (shape === "square") {
-        generateRiverPath(150, 200, 300, width); // centered vertically
+        generateRiverPath(150, 200, 300, width); 
       } else if (shape === "circle") {
-        generateCurvedRiverPath(300, 200, 150, width);
+        generateCurvedRiverPath(300, 200, 150, width); 
       }
 
       ctx.fill();
@@ -165,31 +165,40 @@
       ctx.restore();
     }
 
-    function generateRiverPath(x, y, width, riverW) {
+    function generateRiverPath(x, y, length, riverW) {
       ctx.moveTo(x, y - riverW / 2);
-      const step = 50;
-      for (let i = 0; i <= width; i += step) {
-        const offset = Math.sin(i / 50) * 30;
+      const step = 30;
+      let offset = 0;
+      for (let i = 0; i <= length; i += step) {
+        offset += (Math.random() - 0.5) * 20; 
+        offset = Math.max(Math.min(offset, 40), -40);
         ctx.lineTo(x + i, y - riverW / 2 + offset);
       }
-      for (let i = width; i >= 0; i -= step) {
-        const offset = Math.sin(i / 50) * 30;
+      for (let i = length; i >= 0; i -= step) {
+        offset += (Math.random() - 0.5) * 20;
+        offset = Math.max(Math.min(offset, 40), -40);
         ctx.lineTo(x + i, y + riverW / 2 + offset);
       }
       ctx.closePath();
     }
 
     function generateCurvedRiverPath(cx, cy, radius, riverW) {
-      const step = Math.PI / 30; // curve detail
+      const step = Math.PI / 40;
+      let offset = 0;
+
       ctx.moveTo(cx - radius, cy - riverW / 2);
 
+      // Top edge of river
       for (let angle = Math.PI; angle >= 0; angle -= step) {
-        const offset = Math.sin(angle * 3) * 20;
+        offset += (Math.random() - 0.5) * 15;
+        offset = Math.max(Math.min(offset, 30), -30);
         ctx.lineTo(cx + Math.cos(angle) * radius,
                    cy + Math.sin(angle) * radius - riverW / 2 + offset);
       }
+      // Bottom edge of river
       for (let angle = 0; angle <= Math.PI; angle += step) {
-        const offset = Math.sin(angle * 3) * 20;
+        offset += (Math.random() - 0.5) * 15;
+        offset = Math.max(Math.min(offset, 30), -30);
         ctx.lineTo(cx + Math.cos(angle) * radius,
                    cy + Math.sin(angle) * radius + riverW / 2 + offset);
       }
