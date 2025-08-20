@@ -7,8 +7,8 @@ const galleryItems = [
   },
   {
     type: "image",
-    src: "https://i.imgur.com/2cOaZsJ.jpg",
-    title: "Walnut Live Edge"
+    src: "images/tables/Patagoniarosewood.jpg,
+    title: "Patagonian Rosewood River Table"
   },
   {
     type: "video",
@@ -17,8 +17,8 @@ const galleryItems = [
   },
   {
     type: "image",
-    src: "https://i.imgur.com/6kphbP3.jpg",
-    title: "Cherry Slab with Blue Epoxy"
+    src: "images/tables/Walnuthallway.jpg",
+    title: "Walnut Live Edge"
   }
 ];
 
