@@ -12,8 +12,8 @@ const galleryItems = [
   },
   {
     type: "video",
-    src: "https://www.w3schools.com/html/mov_bbb.mp4",
-    title: "Pouring Epoxy Demo"
+    src: "/images/table/Olivetablevid.mp4",
+    title: "Olive Coffee Table"
   },
   {
     type: "image",
