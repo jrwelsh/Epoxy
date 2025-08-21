@@ -18,6 +18,7 @@ jobs:
           echo "[" > gallery.json
           first=true
           for file in images/tables/*; do
+            [ -f "$file" ] || continue
             ext="${file##*.}"
             name=$(basename "$file")
             title="${name%.*}"
@@ -34,7 +35,8 @@ jobs:
               echo "," >> gallery.json
             fi
 
-            echo "  { \"type\": \"$type\", \"src\": \"./$file\", \"title\": \"$title\" }" >> gallery.json
+            # Notice: removed leading ./ in src
+            echo "  { \"type\": \"$type\", \"src\": \"images/tables/$name\", \"title\": \"$title\" }" >> gallery.json
           done
           echo "]" >> gallery.json
 
