@@ -3,11 +3,11 @@
 ,
   { "type": "image", "src": "/images/tables/IMG_0327.JPG", "title": "IMG_0327" }
 ,
-  { "type": "image", "src": "/images/tables/IMG_0332.JPG", "title": "IMG_0332" }
-,
   { "type": "image", "src": "/images/tables/Olivetable.jpg", "title": "Olivetable" }
 ,
   { "type": "image", "src": "/images/tables/Patagonian_Rosewood.jpg", "title": "Patagonian_Rosewood" }
+,
+  { "type": "image", "src": "/images/tables/Walnut_Coffee.JPG", "title": "Walnut_Coffee" }
 ,
   { "type": "image", "src": "/images/tables/Walnut_Hallway.jpg", "title": "Walnut_Hallway" }
 ]
