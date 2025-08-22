@@ -26,7 +26,13 @@ jobs:
           for file in images/tables/*; do
             ext="${file##*.}"
             name=$(basename "$file")
-            title="${name%.*}"
+            rawtitle="${name%.*}"
+
+            # Replace underscores with spaces
+            title=$(echo "$rawtitle" | sed 's/_/ /g')
+
+            # Add spaces before capital letters (e.g. "PatagoniaRosewood" -> "Patagonia Rosewood")
+            title=$(echo "$title" | sed 's/\([a-z]\)\([A-Z]\)/\1 \2/g')
 
             if [ "$ext" = "mp4" ]; then
               type="video"
