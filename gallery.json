@@ -9,8 +9,6 @@
 ,
   { "type": "image", "src": "/images/tables/Olivetable.jpg", "title": "Olivetable" }
 ,
-  { "type": "video", "src": "/images/tables/Olivetablevid.mp4", "title": "Olivetablevid" }
-,
   { "type": "image", "src": "/images/tables/Patagoniarosewood.jpg", "title": "Patagoniarosewood" }
 ,
   { "type": "image", "src": "/images/tables/Test", "title": "Test" }
