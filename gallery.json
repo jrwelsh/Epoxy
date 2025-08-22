@@ -1,6 +1,4 @@
 [
-  { "type": "image", "src": "/images/tables/IMG_0351~2.JPG", "title": "IMG 0351~2" }
-,
   { "type": "image", "src": "/images/tables/Olive_table.jpg", "title": "Olive table" }
 ,
   { "type": "image", "src": "/images/tables/Patagonian_Rosewood.jpg", "title": "Patagonian Rosewood" }
@@ -8,6 +6,8 @@
   { "type": "image", "src": "/images/tables/Screenshot_20250819_204418_Photos.jpg", "title": "Screenshot 20250819 204418 Photos" }
 ,
   { "type": "image", "src": "/images/tables/Walnut_Corner.jpg", "title": "Walnut Corner" }
+,
+  { "type": "image", "src": "/images/tables/Walnut_End_Table_Medium.JPG", "title": "Walnut End Table Medium" }
 ,
   { "type": "image", "src": "/images/tables/Walnut_Medium_End_Table.JPG", "title": "Walnut Medium End Table" }
 ,
