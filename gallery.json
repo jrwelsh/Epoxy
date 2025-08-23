@@ -1,6 +1,8 @@
 [
   { "type": "image", "src": "/images/tables/Ipe_End_Table_Medium.JPG", "title": "Ipe End Table Medium" }
 ,
+  { "type": "image", "src": "/images/tables/Ipe_Medium_End_Table.JPG", "title": "Ipe Medium End Table" }
+,
   { "type": "image", "src": "/images/tables/Ipe_Small_End_Table_.JPG", "title": "Ipe Small End Table " }
 ,
   { "type": "image", "src": "/images/tables/Olive_table.jpg", "title": "Olive table" }
@@ -10,8 +12,6 @@
   { "type": "image", "src": "/images/tables/Pilon_Circular_Coffee_Table.jpg", "title": "Pilon Circular Coffee Table" }
 ,
   { "type": "image", "src": "/images/tables/Walnut_Corner.jpg", "title": "Walnut Corner" }
-,
-  { "type": "image", "src": "/images/tables/Walnut_Medium_End_Table.JPG", "title": "Walnut Medium End Table" }
 ,
   { "type": "image", "src": "/images/tables/Walnuthallway.jpg", "title": "Walnuthallway" }
 ]
