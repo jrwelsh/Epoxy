@@ -26,6 +26,8 @@ document.addEventListener("DOMContentLoaded", () => {
           media.src = item.src;
           media.alt = item.title;
         }
+
+        media.className = "gallery-media"; // ✅ add a common class for styling
         card.appendChild(media);
 
         const caption = document.createElement("div");
