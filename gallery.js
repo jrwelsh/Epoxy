@@ -1,39 +1,65 @@
-const galleryGrid = document.getElementById("galleryGrid");
+// gallery.js
+document.addEventListener("DOMContentLoaded", () => {
+  const galleryGrid = document.getElementById("galleryGrid");
 
-fetch("gallery.json")
-  .then(res => res.json())
-  .then(galleryItems => {
-    if (!galleryItems.length) {
-      galleryGrid.innerHTML = "<p>No gallery items found.</p>";
-      return;
-    }
-
-    galleryItems.forEach(item => {
-      const card = document.createElement("div");
-      card.classList.add("gallery-card");
-
-      if (item.type === "image") {
-        const img = document.createElement("img");
-        img.src = item.src;
-        img.alt = item.title;
-        img.loading = "lazy";
-        card.appendChild(img);
-      } else if (item.type === "video") {
-        const vid = document.createElement("video");
-        vid.src = item.src;
-        vid.controls = true;
-        vid.width = 320;
-        card.appendChild(vid);
+  fetch("gallery.json")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Could not load gallery.json");
       }
+      return response.json();
+    })
+    .then((items) => {
+      galleryGrid.innerHTML = ""; // Clear old content
 
-      const caption = document.createElement("p");
-      caption.textContent = item.title;
-      card.appendChild(caption);
+      items.forEach((item) => {
+        const card = document.createElement("div");
+        card.className = "gallery-card";
 
-      galleryGrid.appendChild(card);
+        let media;
+        if (item.type === "video") {
+          media = document.createElement("video");
+          media.src = item.src;
+          media.controls = true;
+        } else {
+          media = document.createElement("img");
+          media.src = item.src;
+          media.alt = item.title;
+        }
+        card.appendChild(media);
+
+        const caption = document.createElement("div");
+        caption.className = "gallery-caption";
+
+        const title = document.createElement("h3");
+        title.textContent = item.title.replace(/_/g, " "); // convert underscores to spaces
+        caption.appendChild(title);
+
+        if (item.price) {
+          const price = document.createElement("p");
+          price.className = "gallery-price";
+          price.textContent = `Price: ${item.price}`;
+          caption.appendChild(price);
+        }
+
+        if (item.status) {
+          const status = document.createElement("p");
+          status.className = `gallery-status ${
+            item.status.toLowerCase() === "sold" ? "sold" : "available"
+          }`;
+          status.textContent =
+            item.status.toLowerCase() === "sold"
+              ? "Status: SOLD"
+              : "Status: Available";
+          caption.appendChild(status);
+        }
+
+        card.appendChild(caption);
+        galleryGrid.appendChild(card);
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      galleryGrid.innerHTML = "<p>Could not load gallery.</p>";
     });
-  })
-  .catch(err => {
-    console.error("Error loading gallery.json:", err);
-    galleryGrid.innerHTML = "<p>Could not load gallery.</p>";
-  });
+});
