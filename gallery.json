@@ -11,7 +11,11 @@
 ,
   { "type": "image", "src": "/images/tables/Pilon_Circular_Coffee_Table.jpg", "title": "Pilon Circular Coffee Table" }
 ,
+  { "type": "video", "src": "/images/tables/Pilon_Round_Coffee_Table.mp4", "title": "Pilon Round Coffee Table" }
+,
   { "type": "image", "src": "/images/tables/Walnut_Corner.jpg", "title": "Walnut Corner" }
+,
+  { "type": "video", "src": "/images/tables/Walnut_Hallway.mp4", "title": "Walnut Hallway" }
 ,
   { "type": "image", "src": "/images/tables/Walnuthallway.jpg", "title": "Walnuthallway" }
 ]
