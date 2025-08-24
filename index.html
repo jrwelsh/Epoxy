@@ -7,22 +7,26 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <nav>
-      <div class="logo">Jaxwel Woodworks</div>
-      <ul class="nav-links">
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">Jaxwel Woodworks</a>
+      <ul class="nav-links" id="navLinks">
         <li><a href="index.html" class="active">Home</a></li>
         <li><a href="gallery.html">Gallery</a></li>
         <li><a href="builder.html">Builder</a></li>
         <li><a href="about.html">About</a></li>
         <li><a href="contact.html">Contact</a></li>
       </ul>
-      <div class="hamburger">
-        <div></div>
-        <div></div>
-        <div></div>
+      <div class="hamburger" id="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
       </div>
-    </nav>
+    </div>
+  </nav>
+
+  <header>
     <p class="tagline">Custom Epoxy River Tables & Fine Woodworking</p>
   </header>
 
@@ -36,15 +40,6 @@
     <p>&copy; 2025 Jaxwel Woodworks</p>
   </footer>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const hamburger = document.querySelector(".hamburger");
-      const navLinks = document.querySelector(".nav-links");
-
-      hamburger.addEventListener("click", () => {
-        navLinks.classList.toggle("active");
-      });
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
