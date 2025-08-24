@@ -5,6 +5,105 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About - Jaxwel Woodworks</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* 🔥 Add this in style.css so it works site-wide */
+    nav {
+      background-color: #222; /* Dark background */
+      padding: 0.5rem 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .nav-logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 1rem;
+    }
+
+    .nav-links li a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1rem;
+    }
+
+    .nav-links li a.active {
+      border-bottom: 2px solid #f4a261; /* Accent color highlight */
+    }
+
+    /* Hamburger styles */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      gap: 5px;
+    }
+
+    .hamburger span {
+      height: 3px;
+      width: 25px;
+      background: #fff; /* white bars */
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+
+    /* Mobile menu */
+    @media (max-width: 768px) {
+      .hamburger {
+        display: flex;
+      }
+      .nav-links {
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background: #222;
+        flex-direction: column;
+        width: 200px;
+        display: none;
+        padding: 1rem;
+      }
+      .nav-links.show {
+        display: flex;
+      }
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f5f5f5; /* Light grey background for modern look */
+      color: #222;
+    }
+
+    header {
+      text-align: center;
+      padding: 2rem 1rem;
+      background: #333;
+      color: #fff;
+    }
+
+    footer {
+      background: #222;
+      color: #fff;
+      text-align: center;
+      padding: 1rem;
+      margin-top: 2rem;
+    }
+  </style>
 </head>
 <body>
   <!-- Navigation -->
