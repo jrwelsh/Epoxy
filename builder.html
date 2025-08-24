@@ -19,14 +19,23 @@
       text-align: center;
       width: 100%;
     }
-    nav {
-      margin-top: 0.5rem;
-    }
-    nav a {
-      color: white;
-      margin: 0 1rem;
-      text-decoration: none;
-    }
+    <nav>
+  <div class="nav-container">
+    <a href="index.html" class="nav-logo">MySite</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+</nav>
     .controls {
       display: flex;
       flex-wrap: wrap;
