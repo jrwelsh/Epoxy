@@ -9,18 +9,20 @@
 <body>
   <!-- Navigation -->
   <nav>
-    <div class="logo">Jaxwel Woodworks</div>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="gallery.html">Gallery</a></li>
-      <li><a href="builder.html">Builder</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html" class="active">Contact</a></li>
-    </ul>
-    <div class="hamburger">
-      <div></div>
-      <div></div>
-      <div></div>
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">Jaxwel Woodworks</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+        <li><a href="builder.html">Builder</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html" class="active">Contact</a></li>
+      </ul>
+      <div class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
     </div>
   </nav>
 
@@ -46,13 +48,13 @@
     <p>&copy; 2025 Jaxwel Woodworks</p>
   </footer>
 
+  <!-- Hamburger Script (same everywhere) -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const hamburger = document.querySelector(".hamburger");
       const navLinks = document.querySelector(".nav-links");
-
       hamburger.addEventListener("click", () => {
-        navLinks.classList.toggle("active");
+        navLinks.classList.toggle("show");
       });
     });
   </script>
