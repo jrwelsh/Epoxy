@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>River Table Builder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>River Table Builder - Jaxwel Woodworks</title>
+  <link rel="stylesheet" href="style.css">
   <style>
     body {
       margin: 0;
@@ -12,36 +14,17 @@
       align-items: center;
       background: #f4f4f4;
     }
-    header {
-      background: #333;
-      color: white;
-      padding: 1rem;
-      text-align: center;
+    main {
       width: 100%;
+      max-width: 1200px;
+      padding: 1rem;
     }
-    <nav>
-  <div class="nav-container">
-    <a href="index.html" class="nav-logo">MySite</a>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="index.html" class="active">Home</a></li>
-      <li><a href="gallery.html">Gallery</a></li>
-      <li><a href="shop.html">Shop</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
-    <div class="hamburger" id="hamburger">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-  </div>
-</nav>
     .controls {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 1rem;
-      margin: 1rem;
+      margin: 1rem 0;
     }
     .control-group {
       background: white;
@@ -51,63 +34,81 @@
     }
     canvas {
       background: #ddd;
-      margin: 1rem;
+      margin: 1rem auto;
       border-radius: 8px;
+      display: block;
     }
   </style>
 </head>
 <body>
-  <header>
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">MySite</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="builder.html" class="active">Builder</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="hamburger" id="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </nav>
+
+  <main>
     <h1>River Table Builder</h1>
-    <nav>
-      <!-- Only change from your working version: added About link and real page hrefs -->
-      <a href="index.html">Home</a>
-      <a href="gallery.html">Gallery</a>
-      <a href="builder.html">Builder</a>
-      <a href="about.html">About</a>
-      <a href="contact.html">Contact</a>
-    </nav>
-  </header>
 
-  <div class="controls">
-    <div class="control-group">
-      <label>Shape:
-        <select id="shapeSelect">
-          <option value="rectangle">Rectangle</option>
-          <option value="square">Square</option>
-          <option value="circle">Circle</option>
-        </select>
-      </label>
+    <div class="controls">
+      <div class="control-group">
+        <label>Shape:
+          <select id="shapeSelect">
+            <option value="rectangle">Rectangle</option>
+            <option value="square">Square</option>
+            <option value="circle">Circle</option>
+          </select>
+        </label>
+      </div>
+      <div class="control-group">
+        <label>Wood Type:
+          <select id="woodSelect">
+            <option value="oak">Oak</option>
+            <option value="walnut">Walnut</option>
+            <option value="cherry">Cherry</option>
+            <option value="maple">Maple</option>
+          </select>
+        </label>
+      </div>
+      <div class="control-group">
+        <label>River Width:
+          <input type="range" id="riverWidth" min="20" max="200" value="80">
+        </label>
+      </div>
+      <div class="control-group">
+        <label>Epoxy Color:
+          <input type="color" id="epoxyColor" value="#1ca3ec">
+        </label>
+      </div>
+      <div class="control-group">
+        <label>Epoxy Opacity:
+          <input type="range" id="epoxyOpacity" min="0" max="1" step="0.05" value="0.7">
+        </label>
+      </div>
     </div>
-    <div class="control-group">
-      <label>Wood Type:
-        <select id="woodSelect">
-          <option value="oak">Oak</option>
-          <option value="walnut">Walnut</option>
-          <option value="cherry">Cherry</option>
-          <option value="maple">Maple</option>
-        </select>
-      </label>
-    </div>
-    <div class="control-group">
-      <label>River Width:
-        <input type="range" id="riverWidth" min="20" max="200" value="80">
-      </label>
-    </div>
-    <div class="control-group">
-      <label>Epoxy Color:
-        <input type="color" id="epoxyColor" value="#1ca3ec">
-      </label>
-    </div>
-    <div class="control-group">
-      <label>Epoxy Opacity:
-        <input type="range" id="epoxyOpacity" min="0" max="1" step="0.05" value="0.7">
-      </label>
-    </div>
-  </div>
 
-  <canvas id="builderCanvas" width="800" height="600"></canvas>
+    <canvas id="builderCanvas" width="800" height="600"></canvas>
+  </main>
 
+  <footer>
+    <p>&copy; 2025 Jaxwel Woodworks</p>
+  </footer>
+
+  <!-- Builder Script -->
   <script>
     const canvas = document.getElementById("builderCanvas");
     const ctx = canvas.getContext("2d");
@@ -119,10 +120,10 @@
     const epoxyOpacitySlider = document.getElementById("epoxyOpacity");
 
     const woodTextures = {
-      oak: "/images/wood/oak.jpg",
-      walnut: "/images/wood/walnut.jpg",
-      cherry: "/images/wood/cherry.jpg",
-      maple: "/images/wood/maple.jpg"
+      oak: "images/wood/oak.jpg",
+      walnut: "images/wood/walnut.jpg",
+      cherry: "images/wood/cherry.jpg",
+      maple: "images/wood/maple.jpg"
     };
 
     const woodImages = {};
@@ -146,7 +147,6 @@
         offset = Math.max(Math.min(offset, 40), -40);
         offsets.push(offset);
       }
-
       ctx.moveTo(x, y - riverW / 2 + offsets[0]);
       for (let i = 0; i < offsets.length; i++) {
         ctx.lineTo(x + i * step, y - riverW / 2 + offsets[i]);
@@ -166,8 +166,6 @@
         offset = Math.max(Math.min(offset, 40), -40);
         offsets.push(offset);
       }
-
-      // Slight extension so it reliably reaches edges; confined by clip
       ctx.moveTo(cx - width/2 - 10, cy - riverW / 2 + offsets[0]);
       for (let i = 0; i < offsets.length; i++) {
         ctx.lineTo(cx - width/2 + i * step, cy - riverW / 2 + offsets[i]);
@@ -178,7 +176,6 @@
         ctx.lineTo(cx - width/2 + i * step, cy + riverW / 2 + offsets[i]);
       }
       ctx.lineTo(cx - width/2 - 10, cy + riverW / 2 + offsets[0]);
-
       ctx.closePath();
     }
 
@@ -210,7 +207,7 @@
       }
       ctx.fill();
 
-      // Clip river to shape boundary
+      // Clip river inside shape
       ctx.save();
       ctx.beginPath();
       if (shape === "rectangle") {
@@ -245,23 +242,22 @@
       return `rgba(${r},${g},${b},${opacity})`;
     }
 
-    // Controls
     shapeSelect.addEventListener("change", draw);
     woodSelect.addEventListener("change", draw);
     riverWidthSlider.addEventListener("input", draw);
     epoxyColorPicker.addEventListener("input", draw);
     epoxyOpacitySlider.addEventListener("input", draw);
-
-    // Initial draw once textures load
   </script>
-  <script>
-  const hamburger = document.getElementById("hamburger");
-  const navLinks = document.getElementById("navLinks");
 
-  hamburger.addEventListener("click", () => {
-    hamburger.classList.toggle("active");
-    navLinks.classList.toggle("show");
-  });
+  <!-- Hamburger Menu Script -->
+  <script>
+    const hamburger = document.getElementById("hamburger");
+    const navLinks = document.getElementById("navLinks");
+
+    hamburger.addEventListener("click", () => {
+      hamburger.classList.toggle("active");
+      navLinks.classList.toggle("show");
+    });
   </script>
 </body>
 </html>
