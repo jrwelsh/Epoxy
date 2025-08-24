@@ -9,22 +9,20 @@
 <body>
   <!-- Navigation -->
   <nav>
-  <div class="nav-container">
-    <a href="index.html" class="nav-logo">MySite</a>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="index.html" class="active">Home</a></li>
-      <li><a href="gallery.html">Gallery</a></li>
-      <li><a href="shop.html">Shop</a></li>
+    <div class="logo">Jaxwel Woodworks</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="gallery.html" class="active">Gallery</a></li>
+      <li><a href="builder.html">Builder</a></li>
       <li><a href="about.html">About</a></li>
       <li><a href="contact.html">Contact</a></li>
     </ul>
-    <div class="hamburger" id="hamburger">
-      <span></span>
-      <span></span>
-      <span></span>
+    <div class="hamburger">
+      <div></div>
+      <div></div>
+      <div></div>
     </div>
-  </div>
-</nav>
+  </nav>
 
   <main class="container">
     <h1>Project Gallery</h1>
@@ -35,15 +33,20 @@
     </div>
   </main>
 
+  <footer>
+    <p>&copy; 2025 Jaxwel Woodworks</p>
+  </footer>
+
   <script src="gallery.js"></script>
   <script>
-  const hamburger = document.getElementById("hamburger");
-  const navLinks = document.getElementById("navLinks");
+    document.addEventListener("DOMContentLoaded", () => {
+      const hamburger = document.querySelector(".hamburger");
+      const navLinks = document.querySelector(".nav-links");
 
-  hamburger.addEventListener("click", () => {
-    hamburger.classList.toggle("active");
-    navLinks.classList.toggle("show");
-  });
-</script>
+      hamburger.addEventListener("click", () => {
+        navLinks.classList.toggle("active");
+      });
+    });
+  </script>
 </body>
 </html>
