@@ -5,55 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>River Table Builder - Jaxwel Woodworks</title>
   <link rel="stylesheet" href="style.css">
-  <style>
-    body {
-      margin: 0;
-      font-family: sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background: #f4f4f4;
-    }
-    main {
-      width: 100%;
-      max-width: 1200px;
-      padding: 1rem;
-    }
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1rem;
-      margin: 1rem 0;
-    }
-    .control-group {
-      background: white;
-      padding: 1rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    canvas {
-      background: #ddd;
-      margin: 1rem auto;
-      border-radius: 8px;
-      display: block;
-    }
-  </style>
 </head>
 <body>
   <!-- Navigation -->
   <nav>
     <div class="nav-container">
-      <a href="index.html" class="nav-logo">MySite</a>
-      <ul class="nav-links" id="navLinks">
+      <a href="index.html" class="nav-logo">Jaxwel Woodworks</a>
+      <ul class="nav-links">
         <li><a href="index.html">Home</a></li>
         <li><a href="gallery.html">Gallery</a></li>
-        <li><a href="shop.html">Shop</a></li>
         <li><a href="builder.html" class="active">Builder</a></li>
         <li><a href="about.html">About</a></li>
         <li><a href="contact.html">Contact</a></li>
       </ul>
-      <div class="hamburger" id="hamburger">
+      <div class="hamburger">
         <span></span>
         <span></span>
         <span></span>
@@ -249,14 +214,14 @@
     epoxyOpacitySlider.addEventListener("input", draw);
   </script>
 
-  <!-- Hamburger Menu Script -->
+  <!-- Hamburger Script (same everywhere) -->
   <script>
-    const hamburger = document.getElementById("hamburger");
-    const navLinks = document.getElementById("navLinks");
-
-    hamburger.addEventListener("click", () => {
-      hamburger.classList.toggle("active");
-      navLinks.classList.toggle("show");
+    document.addEventListener("DOMContentLoaded", () => {
+      const hamburger = document.querySelector(".hamburger");
+      const navLinks = document.querySelector(".nav-links");
+      hamburger.addEventListener("click", () => {
+        navLinks.classList.toggle("show");
+      });
     });
   </script>
 </body>
