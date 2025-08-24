@@ -8,27 +8,23 @@
 </head>
 <body>
   <header>
-    <h1>Jaxwel Woodworks</h1>
-    <p>Custom Epoxy River Tables & Fine Woodworking</p>
+    <nav>
+      <div class="logo">Jaxwel Woodworks</div>
+      <ul class="nav-links">
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+        <li><a href="builder.html">Builder</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="hamburger">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </nav>
+    <p class="tagline">Custom Epoxy River Tables & Fine Woodworking</p>
   </header>
-
-  <nav>
-  <div class="nav-container">
-    <a href="index.html" class="nav-logo">MySite</a>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="index.html" class="active">Home</a></li>
-      <li><a href="gallery.html">Gallery</a></li>
-      <li><a href="builder.html">Shop</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
-    <div class="hamburger" id="hamburger">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-  </div>
-</nav>
 
   <main>
     <h2>Welcome to Jaxwel Woodworks</h2>
@@ -39,14 +35,16 @@
   <footer>
     <p>&copy; 2025 Jaxwel Woodworks</p>
   </footer>
-  <script>
-  const hamburger = document.getElementById("hamburger");
-  const navLinks = document.getElementById("navLinks");
 
-  hamburger.addEventListener("click", () => {
-    hamburger.classList.toggle("active");
-    navLinks.classList.toggle("show");
-  });
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const hamburger = document.querySelector(".hamburger");
+      const navLinks = document.querySelector(".nav-links");
+
+      hamburger.addEventListener("click", () => {
+        navLinks.classList.toggle("active");
+      });
+    });
   </script>
 </body>
 </html>
