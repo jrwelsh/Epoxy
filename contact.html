@@ -7,42 +7,37 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Contact & Orders</h1>
-  </header>
-
-<nav>
-  <div class="nav-container">
-    <a href="index.html" class="nav-logo">MySite</a>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="index.html" class="active">Home</a></li>
+  <!-- Navigation -->
+  <nav>
+    <div class="logo">Jaxwel Woodworks</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
       <li><a href="gallery.html">Gallery</a></li>
-      <li><a href="shop.html">Shop</a></li>
+      <li><a href="builder.html">Builder</a></li>
       <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
+      <li><a href="contact.html" class="active">Contact</a></li>
     </ul>
-    <div class="hamburger" id="hamburger">
-      <span></span>
-      <span></span>
-      <span></span>
+    <div class="hamburger">
+      <div></div>
+      <div></div>
+      <div></div>
     </div>
-  </div>
-</nav>
+  </nav>
 
-  <main>
-    <h2>Get in Touch</h2>
+  <main class="container">
+    <h1>Contact & Orders</h1>
     <p>If you’d like to order a custom table, please reach out:</p>
     <ul>
       <li>Email: <a href="mailto:jrwelsh44@gmail.com">jrwelsh44@gmail.com</a></li>
-      <li>Phone: (401)222 9759</li>
-      <li>Instagram: <a href="https://www.instagram.com/jaxonbish">@jaxonbish</a></li>
+      <li>Phone: (401) 222-9759</li>
+      <li>Instagram: <a href="https://www.instagram.com/jaxonbish" target="_blank">@jaxonbish</a></li>
     </ul>
 
-    <h3>Contact Form</h3>
+    <h2>Contact Form</h2>
     <form>
-      <label>Name:<br><input type="text" name="name"></label><br><br>
-      <label>Email:<br><input type="email" name="email"></label><br><br>
-      <label>Message:<br><textarea name="message"></textarea></label><br><br>
+      <label>Name:<br><input type="text" name="name" required></label><br><br>
+      <label>Email:<br><input type="email" name="email" required></label><br><br>
+      <label>Message:<br><textarea name="message" required></textarea></label><br><br>
       <button type="submit">Send</button>
     </form>
   </main>
@@ -50,14 +45,16 @@
   <footer>
     <p>&copy; 2025 Jaxwel Woodworks</p>
   </footer>
-  <script>
-  const hamburger = document.getElementById("hamburger");
-  const navLinks = document.getElementById("navLinks");
 
-  hamburger.addEventListener("click", () => {
-    hamburger.classList.toggle("active");
-    navLinks.classList.toggle("show");
-  });
-</script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const hamburger = document.querySelector(".hamburger");
+      const navLinks = document.querySelector(".nav-links");
+
+      hamburger.addEventListener("click", () => {
+        navLinks.classList.toggle("active");
+      });
+    });
+  </script>
 </body>
 </html>
