@@ -1,97 +1,89 @@
-/* -------------------
-   Global Reset + Body
-------------------- */
+/* Reset some default styles */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* Body styling */
 body {
-  font-family: Arial, Helvetica, sans-serif;
-  background-color: #111;
-  color: #eee;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.6;
+  background: #f9f9f9;
+  color: #333;
 }
 
-/* -------------------
-   Navigation Bar
-------------------- */
-nav {
-  background-color: #111;
-  padding: 10px 20px;
+/* Header and navigation */
+header {
+  background: #222;
+  color: #fff;
+  padding: 15px 20px;
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1000;
 }
 
-.nav-container {
+nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 1200px;
-  margin: auto;
 }
 
-.nav-logo {
-  color: #fff;
-  font-size: 1.4em;
+nav .logo {
+  font-size: 1.5em;
   font-weight: bold;
-  text-decoration: none;
 }
 
-/* Default desktop nav */
-.nav-links {
+nav ul {
   list-style: none;
   display: flex;
   gap: 20px;
 }
 
-.nav-links li a {
-  color: white;
+nav ul li a {
+  color: #fff;
   text-decoration: none;
-  font-weight: bold;
-  font-size: 1em;
-  transition: color 0.3s ease;
+  font-weight: 500;
+  transition: color 0.3s;
 }
 
-.nav-links li a:hover,
-.nav-links li a.active {
-  color: #ffcc00; /* highlight */
+nav ul li a:hover {
+  color: #f4a261;
 }
 
-/* Hamburger menu */
+/* Hamburger Menu */
 .hamburger {
   display: none;
   flex-direction: column;
   cursor: pointer;
-  gap: 5px;
 }
 
-.hamburger span {
+.hamburger div {
   width: 25px;
   height: 3px;
   background: white;
-  border-radius: 3px;
-  transition: all 0.3s ease;
+  margin: 4px;
+  transition: 0.3s;
 }
 
-/* Mobile nav hidden by default */
+.nav-links {
+  display: flex;
+}
+
+.nav-links.active {
+  display: block;
+  flex-direction: column;
+  background: #222;
+  position: absolute;
+  top: 60px;
+  right: 0;
+  width: 200px;
+  padding: 20px;
+}
+
 @media (max-width: 768px) {
   .nav-links {
-    position: absolute;
-    top: 60px;
-    right: 0;
-    background: #111;
-    flex-direction: column;
-    width: 200px;
-    padding: 20px;
-    gap: 15px;
     display: none;
-  }
-
-  .nav-links.show {
-    display: flex;
   }
 
   .hamburger {
@@ -99,89 +91,61 @@ nav {
   }
 }
 
-/* Hamburger animation when active */
-.hamburger.active span:nth-child(1) {
-  transform: rotate(45deg) translateY(8px);
-}
-.hamburger.active span:nth-child(2) {
-  opacity: 0;
-}
-.hamburger.active span:nth-child(3) {
-  transform: rotate(-45deg) translateY(-8px);
-}
-
-/* -------------------
-   Page Headings
-------------------- */
-h1, h2, h3 {
-  color: #fff;
-  text-align: center;
-  margin: 20px 0;
-}
-
-/* (Keeping your existing gallery + footer styles below this) */
-/* ==== Gallery Styles ==== */
-.gallery-container {
+/* Gallery Grid */
+#galleryGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
   padding: 20px;
 }
 
-.gallery-item {
-  background: #1a1a1a;
-  border-radius: 10px;
+.gallery-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+  transition: transform 0.2s;
 }
 
-.gallery-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.7);
+.gallery-card:hover {
+  transform: scale(1.03);
 }
 
-.gallery-item img,
-.gallery-item video {
+/* Force images/videos to fit properly */
+.gallery-card img,
+.gallery-card video {
   width: 100%;
-  height: 220px;
-  object-fit: cover;
+  height: 250px; /* consistent height */
+  object-fit: cover; /* crop without distortion */
   display: block;
 }
 
+/* Caption Styling */
 .gallery-caption {
-  padding: 12px;
-  color: white;
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-  font-size: 16px;
-  text-align: center;
+  padding: 10px;
 }
 
-.gallery-title {
-  font-weight: bold;
-  margin-bottom: 4px;
-  color: #fff;
+.gallery-caption h3 {
+  font-size: 1.1em;
+  margin-bottom: 8px;
 }
 
 .gallery-price {
-  font-size: 14px;
-  color: #ccc;
+  font-weight: bold;
+  color: #2a9d8f;
 }
 
 .gallery-status {
-  font-size: 13px;
-  font-style: italic;
-  color: #ff6666;
+  margin-top: 5px;
+  font-size: 0.9em;
 }
 
-/* -------------------
-   Footer
-------------------- */
-footer {
-  background: #111;
-  color: #aaa;
-  text-align: center;
-  padding: 20px;
-  font-size: 0.9em;
-  margin-top: 40px;
+.gallery-status.sold {
+  color: red;
+  font-weight: bold;
+}
+
+.gallery-status.available {
+  color: green;
 }
