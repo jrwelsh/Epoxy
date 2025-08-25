@@ -1,5 +1,6 @@
 [
-  { "type": "image", "src": "/images/tables/Ipe_End_Table_Medium.JPG", "title": "Ipe End Table Medium" }
+  { "type": "image", "src": "/images/tables/Ipe_End_Table_Medium.JPG", "title": "Ipe End Table Medium"   "price": "$350",
+    "status": "Available"}
 ,
   { "type": "image", "src": "/images/tables/Ipe_Medium_End_Table.JPG", "title": "Ipe Medium End Table" }
 ,
