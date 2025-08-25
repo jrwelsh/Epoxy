@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gallery - Epoxy Tables</title>
+  <title>Gallery - Jaxwel Woodworks</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -19,19 +19,35 @@
         <li><a href="contact.html">Contact</a></li>
       </ul>
       <div class="hamburger">
-        <span></span>
-        <span></span>
-        <span></span>
+        <span></span><span></span><span></span>
       </div>
     </div>
   </nav>
 
   <main class="container">
-    <h1>Project Gallery</h1>
-    <p class="subtitle">Browse real epoxy & wood table projects</p>
+    <h1>Gallery</h1>
+    <div class="gallery-grid">
+      <!-- Example item -->
+      <div class="gallery-item">
+        <img src="images/table1.jpg" alt="Walnut Epoxy Table">
+        <h3>Walnut Epoxy Table</h3>
+        <p class="price">$1,200</p>
+        <p class="status available">Available</p>
+      </div>
 
-    <div class="gallery-grid" id="galleryGrid">
-      <!-- Images & videos will load here -->
+      <div class="gallery-item">
+        <img src="images/table2.jpg" alt="Maple River Table">
+        <h3>Maple River Table</h3>
+        <p class="price">$950</p>
+        <p class="status sold">Sold</p>
+      </div>
+
+      <div class="gallery-item">
+        <img src="images/table3.jpg" alt="Custom Coffee Table">
+        <h3>Custom Coffee Table</h3>
+        <p class="price">Request a Quote</p>
+        <p class="status custom">Custom Order</p>
+      </div>
     </div>
   </main>
 
@@ -39,15 +55,12 @@
     <p>&copy; 2025 Jaxwel Woodworks</p>
   </footer>
 
-  <script src="gallery.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const hamburger = document.querySelector(".hamburger");
       const navLinks = document.querySelector(".nav-links");
-
       hamburger.addEventListener("click", () => {
         navLinks.classList.toggle("show");
-        hamburger.classList.toggle("open");
       });
     });
   </script>
